@@ -1,0 +1,2300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>NYC 2026 · Athena & Konrad</title>
+
+  <!-- iPhone Home Screen Native Web App Meta & Minimalist MUJI SVG App Icon -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="NYC 2026" />
+  <meta name="theme-color" content="#FAF9F6" />
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%23FAF9F6'/%3E%3Crect x='12' y='12' width='156' height='156' rx='30' fill='none' stroke='%234A6B53' stroke-width='4'/%3E%3Ccircle cx='140' cy='40' r='9' fill='%23C85A32'/%3E%3Cpath d='M42 132V96h12v36H42zm18 0V74h14v58H60zm20 0V54h8l6-14 6 14h8v78H80zm34 0V82h14v50h-14zm18 0V102h10v30h-10z' fill='%234A6B53'/%3E%3Ctext x='90' y='156' text-anchor='middle' font-family='sans-serif' font-weight='700' font-size='18' letter-spacing='2' fill='%232C2C2A'%3ENYC 2026%3C/text%3E%3C/svg%3E" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Inter & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Inter"', '"Noto Sans TC"', 'system-ui', '-apple-system', 'sans-serif'],
+          },
+          colors: {
+            washi: '#FAF9F6',
+            paper: '#FFFFFF',
+            hairline: '#E6E4DF',
+            sumi: '#2C2C2A',
+            ash: '#737069',
+            sand: '#F2EFE9',
+            matcha: {
+              DEFAULT: '#4A6B53',
+              light: '#ECF2EE',
+              dark: '#37523E'
+            },
+            maple: {
+              DEFAULT: '#C85A32',
+              light: '#FBECE6',
+              dark: '#A04422'
+            },
+            slateink: {
+              DEFAULT: '#5A6D7C',
+              light: '#EDF1F4',
+              dark: '#42515D'
+            },
+            amberink: {
+              DEFAULT: '#B06A22',
+              light: '#FBF2E6'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    body {
+      background-color: #EAE7DF;
+      color: #2C2C2A;
+      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      overscroll-behavior-y: none;
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .muji-card {
+      background: #FFFFFF;
+      border: 1px solid #E6E4DF;
+      border-radius: 16px;
+      box-shadow: 0 2px 10px rgba(44, 44, 42, 0.025);
+    }
+    .pb-safe { padding-bottom: calc(env(safe-area-inset-bottom, 16px) + 84px); }
+    .bottom-nav-safe { padding-bottom: env(safe-area-inset-bottom, 10px); }
+  </style>
+</head>
+<body class="antialiased selection:bg-matcha-light selection:text-matcha-dark">
+
+  <!-- Mobile-First App Shell (Max 480px centered on desktop, full width on mobile) -->
+  <div class="mx-auto min-h-screen max-w-[480px] bg-washi shadow-xl relative flex flex-col border-x border-hairline">
+
+    <!-- Sticky Header -->
+    <header class="sticky top-0 z-30 bg-washi/95 backdrop-blur-md border-b border-hairline px-4 pt-3.5 pb-3">
+      <div class="flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <div class="flex items-center gap-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-matcha"></span>
+            <p class="text-[10px] font-semibold tracking-widest uppercase text-ash">NOV 21 – NOV 28, 2026 · NYC</p>
+          </div>
+          <h1 id="headerTitle" class="text-[15px] font-bold tracking-tight text-sumi truncate mt-0.5">NYC Thanksgiving & Birthday</h1>
+        </div>
+
+        <div class="flex items-center gap-1.5 shrink-0">
+          <!-- Quick Ticket Wallet Button -->
+          <button onclick="switchTab('tickets')" aria-label="Ticket Wallet" title="Ticket & QR Wallet"
+                  class="relative p-1.5 rounded-full bg-paper border border-hairline text-sumi hover:border-matcha transition-colors">
+            <span class="text-xs leading-none block">🎫</span>
+            <span id="headerTicketBadge" class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-matcha text-white text-[9px] font-bold flex items-center justify-center">0</span>
+          </button>
+
+          <!-- App Install / Offline Save Guide Button -->
+          <button onclick="openInstallModal()" aria-label="Install App" title="Save to iPhone Home Screen"
+                  class="px-2 py-1 rounded-full bg-paper border border-hairline text-[11px] font-semibold text-sumi hover:border-matcha transition-colors flex items-center gap-1">
+            <span>📲</span>
+            <span id="installBtnText" class="hidden sm:inline">App</span>
+          </button>
+
+          <!-- Trilingual Switcher Pill -->
+          <div class="inline-flex items-center bg-sand p-0.5 rounded-full border border-hairline" role="group" aria-label="Language Switcher">
+            <button onclick="setLanguage('en')" id="lang-en" class="px-2 py-1 rounded-full text-[11px] font-bold transition-all">EN</button>
+            <button onclick="setLanguage('zh')" id="lang-zh" class="px-2 py-1 rounded-full text-[11px] font-bold transition-all">繁中</button>
+            <button onclick="setLanguage('de')" id="lang-de" class="px-2 py-1 rounded-full text-[11px] font-bold transition-all">DE</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Day Selector Pills (Shown on Itinerary Tab) -->
+      <div id="daySelectorWrapper" class="mt-3 -mx-4 px-4 overflow-x-auto no-scrollbar flex items-center gap-1.5"></div>
+    </header>
+
+    <!-- Main Scrollable Viewport -->
+    <main id="appContent" class="flex-1 px-4 pt-3.5 pb-safe space-y-3.5"></main>
+
+    <!-- Hidden File Input for Ticket QR Upload -->
+    <input type="file" id="qrFileInput" accept="image/*" class="hidden" onchange="handleTicketFileUpload(event)" />
+
+    <!-- Full-Screen High-Contrast QR Scanner Modal -->
+    <div id="qrScannerModal" class="fixed inset-0 z-50 hidden bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-white w-full max-w-[430px] rounded-2xl overflow-hidden shadow-2xl border border-hairline flex flex-col max-h-[92vh]">
+        <!-- Modal Header -->
+        <div class="px-4 py-3 bg-washi border-b border-hairline flex items-center justify-between gap-2">
+          <div class="min-w-0">
+            <p id="qrModalDate" class="text-[11px] font-bold text-maple uppercase tracking-wider truncate"></p>
+            <h3 id="qrModalTitle" class="text-sm font-bold text-sumi truncate"></h3>
+          </div>
+          <button onclick="closeQrModal()" class="p-1.5 rounded-full bg-paper border border-hairline text-sumi hover:bg-sand">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Bright High-Contrast Image Canvas -->
+        <div class="p-4 bg-white flex-1 overflow-y-auto flex flex-col items-center justify-center">
+          <div class="p-2.5 bg-white border-2 border-sumi/15 rounded-2xl shadow-sm flex items-center justify-center">
+            <img id="qrModalImg" src="" alt="Ticket QR Code" class="max-w-full max-h-[55vh] object-contain rounded-lg transition-transform duration-200" />
+          </div>
+          <p id="qrModalNote" class="mt-3 text-xs font-semibold text-sumi bg-sand px-3 py-1 rounded-full text-center"></p>
+          <p id="qrModalBrightnessTip" class="mt-1.5 text-[11px] text-ash text-center"></p>
+        </div>
+
+        <!-- Modal Footer Actions -->
+        <div class="px-4 py-3 bg-washi border-t border-hairline flex items-center gap-2">
+          <button onclick="triggerReplaceQr()" class="flex-1 py-2.5 px-3 rounded-xl bg-paper border border-hairline text-xs font-bold text-sumi hover:border-matcha">
+            <span id="qrReplaceLabel">Replace QR</span>
+          </button>
+          <button onclick="deleteCurrentQr()" class="py-2.5 px-3 rounded-xl bg-maple-light text-maple text-xs font-bold">
+            <span id="qrDeleteLabel">Delete</span>
+          </button>
+          <button onclick="closeQrModal()" class="py-2.5 px-5 rounded-xl bg-sumi text-white text-xs font-bold">
+            OK
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- iPhone Home Screen Installation & Offline Save Guide Modal -->
+    <div id="installModal" class="fixed inset-0 z-50 hidden bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
+      <div class="bg-washi w-full max-w-[430px] rounded-2xl overflow-hidden shadow-2xl border border-hairline flex flex-col max-h-[90vh]">
+        <div class="px-4 py-3.5 bg-paper border-b border-hairline flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="text-base">📲</span>
+            <h3 id="installModalTitle" class="text-sm font-bold text-sumi">Save App to iPhone Home Screen</h3>
+          </div>
+          <button onclick="closeInstallModal()" class="p-1.5 rounded-full text-ash hover:text-sumi">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+        <div id="installModalBody" class="p-4 overflow-y-auto space-y-3 text-xs text-sumi leading-relaxed"></div>
+        <div class="px-4 py-3 bg-paper border-t border-hairline flex items-center gap-2">
+          <button onclick="downloadStandaloneHtml()" class="flex-1 py-2.5 px-3 rounded-xl bg-matcha text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-matcha-dark">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            <span id="downloadBtnLabel">Download .html File</span>
+          </button>
+          <button onclick="closeInstallModal()" class="py-2.5 px-4 rounded-xl bg-sand text-sumi text-xs font-bold">Close</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 transition-opacity duration-200">
+      <div class="bg-sumi/95 text-white text-xs font-medium px-4 py-2 rounded-full shadow-lg backdrop-blur-sm whitespace-nowrap"></div>
+    </div>
+
+    <!-- Bottom Native 5-Tab Bar -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] z-40 bg-paper/95 backdrop-blur-md border-t border-hairline bottom-nav-safe">
+      <div class="grid grid-cols-5 h-16">
+        <button onclick="switchTab('itinerary')" id="nav-itinerary" class="nav-btn flex flex-col items-center justify-center gap-1 text-matcha transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span id="navLabel-itinerary" class="text-[10px] font-semibold">Itinerary</span>
+        </button>
+
+        <button onclick="switchTab('tickets')" id="nav-tickets" class="nav-btn flex flex-col items-center justify-center gap-1 text-ash transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+          </svg>
+          <span id="navLabel-tickets" class="text-[10px] font-semibold">Tickets</span>
+        </button>
+
+        <button onclick="switchTab('food')" id="nav-food" class="nav-btn flex flex-col items-center justify-center gap-1 text-ash transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+          </svg>
+          <span id="navLabel-food" class="text-[10px] font-semibold">Food & Shop</span>
+        </button>
+
+        <button onclick="switchTab('travel')" id="nav-travel" class="nav-btn flex flex-col items-center justify-center gap-1 text-ash transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span id="navLabel-travel" class="text-[10px] font-semibold">Travel & $</span>
+        </button>
+
+        <button onclick="switchTab('packing')" id="nav-packing" class="nav-btn flex flex-col items-center justify-center gap-1 text-ash transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+          </svg>
+          <span id="navLabel-packing" class="text-[10px] font-semibold">Packing</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. TRILINGUAL DICTIONARY (EN / ZH / DE)
+    // ==========================================
+    const i18n = {
+      en: {
+        appTitle: 'NYC Thanksgiving & Birthday',
+        ticketsTitle: 'Offline Ticket & QR Wallet',
+        foodTitle: 'Food Guide & Black Friday',
+        travelTitle: 'Flights · Hotel · Budget',
+        packingTitle: 'Packing & Saily eSIM',
+        nav: { itinerary: 'Itinerary', tickets: 'Tickets', food: 'Food & Shop', travel: 'Travel & $', packing: 'Packing' },
+        allDays: 'All 8 Days',
+        filterAll: 'All',
+        filterAttraction: 'Attractions',
+        filterDining: 'Dining',
+        filterTransit: 'Transit',
+        catBadge: { attraction: 'ATTRACTION', dining: 'DINING', transit: 'TRANSIT' },
+        navigate: 'Navigate',
+        ticketBtn: 'Ticket',
+        storyLabel: 'Story & Insider Tip',
+        mustEatLabel: 'Must-Order Menu',
+        mustBuyLabel: 'Must-Buy Souvenir',
+        bookingLabel: 'Booking / Ticket Info',
+        weatherLive: 'NYC Live Forecast',
+        weatherCached: 'Offline Cached',
+        weatherFallback: 'Seasonal Avg (Offline)',
+        precip: 'Rain',
+        // Tickets Wallet
+        walletBannerTitle: '100% Offline QR & Ticket Vault',
+        walletBannerDesc: 'Screenshots are compressed & stored locally in your phone. Opens in 0.1s inside NYC subways or queues with zero signal.',
+        uploadedCountLabel: 'Uploaded',
+        uploadQr: 'Upload QR / Screenshot',
+        showQr: 'Show Fullscreen QR',
+        qrReadyBadge: 'QR READY',
+        qrEmptyBadge: 'NO IMAGE',
+        addCustomTicketTitle: 'Add Custom Ticket / Reservation',
+        ticketNamePlaceholder: 'Ticket name (e.g., LIRR Train, Empire State)',
+        ticketDatePlaceholder: 'Date / Ref (e.g., Nov 21 · #ABC123)',
+        addTicketBtn: 'Add Slot',
+        qrSavedToast: 'Ticket image saved offline!',
+        qrDeletedToast: 'Ticket image removed',
+        replaceQr: 'Replace Image',
+        deleteQr: 'Remove Image',
+        brightnessTip: 'Tip: Increase phone screen brightness if scanner has trouble reading.',
+        // Food & Shop
+        bookedDiningTitle: 'Confirmed Reservations & Key Spots',
+        blackFridayTitle: 'Nov 27 Black Friday Soho Checklist',
+        addShopPlaceholder: 'Add beauty or souvenir item...',
+        fastFoodTitle: 'Iconic US & NYC Fast Food Chains',
+        findNearest: 'Find Nearest',
+        // Travel & Budget
+        flightSection: 'Flight Details (BER ↔ NYC)',
+        outbound: 'Outbound · Nov 21 (Sat)',
+        inbound: 'Return · Nov 28 (Sat)',
+        flightNo: 'Flight No.',
+        bookingRef: 'Booking Ref',
+        times: 'Times / Terminal',
+        hotelSection: 'Hotel Base (7 Nights)',
+        copyAddress: 'Copy Address',
+        copiedMsg: 'Copied to clipboard',
+        budgetSection: 'Trip Expense & Budget Tracker',
+        totalSpent: 'Total Logged (USD)',
+        estEuro: 'EUR Equivalent',
+        addExpenseTitle: 'Log New Expense',
+        itemPlaceholder: 'Item (e.g., Shake Shack, Subway OMNY)',
+        amountPlaceholder: 'USD $',
+        addBtn: 'Add',
+        paidBy: 'Paid by',
+        catLabels: { Tickets: 'Tickets', Dining: 'Dining', Shopping: 'Shopping', Transit: 'Transit', Hotel: 'Flight/Hotel' },
+        tipCalcTitle: 'NYC Sales Tax (8.875%) & Tip Calculator',
+        subtotalLabel: 'Pre-Tax Bill Subtotal (USD)',
+        nycTaxToggle: 'NYC Tax (8.875%)',
+        taxAmt: 'NYC Tax',
+        tipAmt: 'Tip',
+        grandTotal: 'Total USD',
+        // Packing
+        packingProgress: 'Packing Progress',
+        resetPacking: 'Reset Checklist',
+        esimTitle: 'Saily US eSIM Activation Steps',
+        // Install Guide
+        installTitle: 'Save to iPhone Home Screen (App Icon)',
+        downloadBtn: 'Download .html File'
+      },
+      zh: {
+        appTitle: 'NYC 感恩節與生日之旅',
+        ticketsTitle: '離線電子票券與 QR 夾',
+        foodTitle: '必吃美食與黑五購物',
+        travelTitle: '航班・住宿・記帳與小費',
+        packingTitle: '打包清單與 eSIM 指南',
+        nav: { itinerary: '每日行程', tickets: '票券夾', food: '美食購物', travel: '機酒記帳', packing: '打包清單' },
+        allDays: '8日總覽',
+        filterAll: '全部',
+        filterAttraction: '景點體驗',
+        filterDining: '餐廳美食',
+        filterTransit: '交通移動',
+        catBadge: { attraction: '景點', dining: '餐廳', transit: '交通' },
+        navigate: 'Google 導航',
+        ticketBtn: '出示票券',
+        storyLabel: '景點故事與攻略',
+        mustEatLabel: '必吃必點菜單',
+        mustBuyLabel: '必買伴手禮',
+        bookingLabel: '重要預約代號 / 時間',
+        weatherLive: '紐約即時預報',
+        weatherCached: '離線快取天氣',
+        weatherFallback: '歷年氣候參考',
+        precip: '降雨機率',
+        // Tickets Wallet
+        walletBannerTitle: '100% 離線電子票券與條碼庫',
+        walletBannerDesc: '上傳的截圖會自動壓縮並存在手機本機空間，在紐約地鐵或無網路排隊現場也能 0.1 秒秒開掃描！',
+        uploadedCountLabel: '已匯入票券',
+        uploadQr: '上傳 QR / 截圖',
+        showQr: '全螢幕放大 QR',
+        qrReadyBadge: '已匯入 QR',
+        qrEmptyBadge: '尚未上傳',
+        addCustomTicketTitle: '新增自訂票券 / 訂位卡槽',
+        ticketNamePlaceholder: '票券名稱（如 LIRR 火車票、餐廳確認信）',
+        ticketDatePlaceholder: '日期 / 代號（如 11/21 · #ABC123）',
+        addTicketBtn: '新增卡槽',
+        qrSavedToast: '票券已成功儲存於手機離線空間！',
+        qrDeletedToast: '已清除該票券圖片',
+        replaceQr: '更換圖片',
+        deleteQr: '清除圖片',
+        brightnessTip: '提示：現場閘門掃描時，可調高手機螢幕亮度更易感應。',
+        // Food & Shop
+        bookedDiningTitle: '已訂位餐廳與重點名單',
+        blackFridayTitle: '11/27 黑五 Soho 購物清單',
+        addShopPlaceholder: '新增想買的彩妝或伴手禮...',
+        fastFoodTitle: '紐約必吃連鎖速食攻略',
+        findNearest: '搜最近分店',
+        // Travel & Budget
+        flightSection: '航班資訊 (柏林 BER ↔ 紐約)',
+        outbound: '去程 · 11/21 (六)',
+        inbound: '回程 · 11/28 (六)',
+        flightNo: '航班代號',
+        bookingRef: '訂位代號',
+        times: '起降時間 / 航廈',
+        hotelSection: '住宿資訊 (連住 7 晚)',
+        copyAddress: '複製英文地址',
+        copiedMsg: '已複製到剪貼簿',
+        budgetSection: '旅行記帳與預算表',
+        totalSpent: '目前總支出 (USD)',
+        estEuro: '約合歐元參考',
+        addExpenseTitle: '新增一筆支出',
+        itemPlaceholder: '項目名稱 (如 Shake Shack、地鐵刷卡)',
+        amountPlaceholder: '美金 $',
+        addBtn: '記帳',
+        paidBy: '付款人',
+        catLabels: { Tickets: '門票體驗', Dining: '餐飲美食', Shopping: '購物伴手禮', Transit: '交通移動', Hotel: '機票住宿' },
+        tipCalcTitle: '紐約含稅 (8.875%) 與小費計算機',
+        subtotalLabel: '輸入帳單稅前金額 (Subtotal USD)',
+        nycTaxToggle: '紐約消費稅 (8.875%)',
+        taxAmt: '紐約稅金',
+        tipAmt: '小費金額',
+        grandTotal: '含稅總計',
+        // Packing
+        packingProgress: '行李打包進度',
+        resetPacking: '重置勾選狀態',
+        esimTitle: 'Saily 美國 eSIM 落地啟用步驟',
+        // Install Guide
+        installTitle: '如何存到 iPhone 桌面變成 App 圖示？',
+        downloadBtn: '下載離線 .html 檔案'
+      },
+      de: {
+        appTitle: 'NYC Thanksgiving & Geburtstag',
+        ticketsTitle: 'Offline Ticket- & QR-Wallet',
+        foodTitle: 'Essen & Black Friday Shopping',
+        travelTitle: 'Flüge · Hotel · Budget',
+        packingTitle: 'Packliste & Saily eSIM',
+        nav: { itinerary: 'Reiseplan', tickets: 'Tickets', food: 'Essen & Shop', travel: 'Reise & $', packing: 'Packliste' },
+        allDays: 'Alle 8 Tage',
+        filterAll: 'Alle',
+        filterAttraction: 'Highlights',
+        filterDining: 'Essen',
+        filterTransit: 'Transfer',
+        catBadge: { attraction: 'HIGHLIGHT', dining: 'ESSEN', transit: 'TRANSFER' },
+        navigate: 'Navigation',
+        ticketBtn: 'Ticket',
+        storyLabel: 'Story & Insider-Tipp',
+        mustEatLabel: 'Must-Order Menü',
+        mustBuyLabel: 'Must-Buy Souvenir',
+        bookingLabel: 'Buchung / Ticket-Info',
+        weatherLive: 'NYC Live-Wetter',
+        weatherCached: 'Offline Gespeichert',
+        weatherFallback: 'Saison-Durchschnitt',
+        precip: 'Regen',
+        // Tickets Wallet
+        walletBannerTitle: '100% Offline QR- & Ticket-Tresor',
+        walletBannerDesc: 'Screenshots werden lokal gespeichert – öffnet blitzschnell in der U-Bahn ganz ohne Internet.',
+        uploadedCountLabel: 'Gespeichert',
+        uploadQr: 'QR / Screenshot hochladen',
+        showQr: 'QR Vollbild zeigen',
+        qrReadyBadge: 'QR BEREIT',
+        qrEmptyBadge: 'KEIN BILD',
+        addCustomTicketTitle: 'Eigenes Ticket hinzufügen',
+        ticketNamePlaceholder: 'Ticketname (z.B. LIRR Zug, Restaurant)',
+        ticketDatePlaceholder: 'Datum / Code (z.B. 21. Nov · #ABC123)',
+        addTicketBtn: 'Hinzufügen',
+        qrSavedToast: 'Ticket offline gespeichert!',
+        qrDeletedToast: 'Ticketbild entfernt',
+        replaceQr: 'Bild ersetzen',
+        deleteQr: 'Bild löschen',
+        brightnessTip: 'Tipp: Bildschirmhelligkeit beim Scannen am Gate erhöhen.',
+        // Food & Shop
+        bookedDiningTitle: 'Reservierte Restaurants & Tipps',
+        blackFridayTitle: '27. Nov Black Friday Soho Liste',
+        addShopPlaceholder: 'Kosmetik oder Souvenir hinzufügen...',
+        fastFoodTitle: 'Legendäre US & NYC Fast-Food Spots',
+        findNearest: 'Filiale suchen',
+        // Travel & Budget
+        flightSection: 'Flugdaten (BER ↔ NYC)',
+        outbound: 'Hinflug · 21. Nov (Sa)',
+        inbound: 'Rückflug · 28. Nov (Sa)',
+        flightNo: 'Flugnr.',
+        bookingRef: 'Buchungscode',
+        times: 'Zeiten / Terminal',
+        hotelSection: 'Unterkunft (7 Nächte)',
+        copyAddress: 'Adresse kopieren',
+        copiedMsg: 'In Zwischenablage kopiert',
+        budgetSection: 'Reisekosten & Budget-Tracker',
+        totalSpent: 'Gesamtausgaben (USD)',
+        estEuro: 'In Euro (ca.)',
+        addExpenseTitle: 'Ausgabe hinzufügen',
+        itemPlaceholder: 'Posten (z.B. Shake Shack, Metro)',
+        amountPlaceholder: 'USD $',
+        addBtn: 'Hinzufügen',
+        paidBy: 'Bezahlt von',
+        catLabels: { Tickets: 'Tickets', Dining: 'Essen', Shopping: 'Shopping', Transit: 'Transfer', Hotel: 'Flug/Hotel' },
+        tipCalcTitle: 'NYC Steuer- (8,875%) & Trinkgeldrechner',
+        subtotalLabel: 'Netto-Rechnungsbetrag (USD)',
+        nycTaxToggle: 'NYC Steuer (8,875%)',
+        taxAmt: 'NYC Steuer',
+        tipAmt: 'Trinkgeld',
+        grandTotal: 'Gesamt USD',
+        // Packing
+        packingProgress: 'Packfortschritt',
+        resetPacking: 'Liste zurücksetzen',
+        esimTitle: 'Saily US eSIM Aktivierung',
+        // Install Guide
+        installTitle: 'Als App-Icon auf dem iPhone speichern',
+        downloadBtn: '.html Datei herunterladen'
+      }
+    };
+
+    // ==========================================
+    // 2. PRE-CONFIGURED TICKET WALLET SLOTS
+    // ==========================================
+    const defaultTicketSlots = [
+      {
+        id: 'tk-esta',
+        dayTag: 'Day 1 · Nov 21',
+        title: { en: 'ESTA Travel Authorization', zh: 'ESTA 美國旅行授權許可', de: 'ESTA Reisegenehmigung' },
+        note: { en: 'Entry requirement · Keep passport handy', zh: '入境必備 · 建議與護照一同出示', de: 'Einreise-Pflicht · Mit Reisepass bereithalten' }
+      },
+      {
+        id: 'tk-rangers',
+        dayTag: 'Day 2 · Nov 22 · 12:30 PM',
+        title: { en: 'NHL Rangers Game @ MSG', zh: 'NHL 紐約遊騎兵隊冰球賽門票', de: 'NHL Rangers Spiel @ MSG' },
+        note: { en: 'Madison Square Garden · Arrive 45m early', zh: '麥迪遜廣場花園 · 提前 45 分鐘安檢', de: 'Madison Square Garden · 45 Min. vorher da sein' }
+      },
+      {
+        id: 'tk-heli',
+        dayTag: 'Day 3 · Nov 23 · 2:30 PM',
+        title: { en: 'Downtown Manhattan Helicopter Tour', zh: '曼哈頓高空直升機體驗票券', de: 'Manhattan Helikopter-Rundflug' },
+        note: { en: 'Pier 6 Heliport · Check-in 2:00 PM + Passport', zh: 'Pier 6 停機坪 · 14:00 報到＋必帶護照', de: 'Pier 6 Heliport · Check-in 14:00 + Reisepass' }
+      },
+      {
+        id: 'tk-boat',
+        dayTag: 'Day 3 · Nov 23 · Sunset',
+        title: { en: 'Circle Line Sunset Boat Tour', zh: 'Circle Line 自由女神日落遊船', de: 'Circle Line Sunset-Bootstour' },
+        note: { en: 'Pier 83 (W 42nd St) · Sunset ~4:30 PM', zh: 'Pier 83 碼頭 · 日落約 16:30', de: 'Pier 83 (W 42nd St) · Sonnenuntergang ~16:30' }
+      },
+      {
+        id: 'tk-met',
+        dayTag: 'Day 4 · Nov 24 · 10:00 AM',
+        title: { en: 'The Metropolitan Museum of Art', zh: '大都會藝術博物館 (The Met) 門票', de: 'The Metropolitan Museum of Art' },
+        note: { en: '1000 5th Ave · General Admission', zh: '1000 5th Ave · 掃碼直接入場', de: '1000 5th Ave · Direkter Einlass' }
+      },
+      {
+        id: 'tk-friends',
+        dayTag: 'Day 5 · Nov 25 · Morning',
+        title: { en: 'The FRIENDS™ Experience NYC', zh: '《六人行》體驗館入場券', de: 'The FRIENDS™ Experience NYC' },
+        note: { en: '130 E 23rd St · Timed Entry', zh: '130 E 23rd St · 指定時段入場', de: '130 E 23rd St · Zeitfenster-Ticket' }
+      },
+      {
+        id: 'tk-broadway',
+        dayTag: 'Day 5 · Nov 25 · 7:00 PM',
+        title: { en: 'Broadway: The Book of Mormon', zh: '百老匯《摩門經》TodayTix 電子票', de: 'Broadway: The Book of Mormon' },
+        note: { en: "Eugene O'Neill Theatre · TodayTix", zh: 'Eugene O’Neill 劇院 · 18:30 開放進場', de: "Eugene O'Neill Theatre · TodayTix" }
+      },
+      {
+        id: 'tk-dining',
+        dayTag: 'Nov 24 / 25 / 26',
+        title: { en: 'OpenTable Restaurant Confirmations', zh: 'OpenTable 餐廳訂位確認憑證', de: 'OpenTable Restaurant-Reservierungen' },
+        note: { en: "The Smith (18:30) · Tony's (16:45) · Gallaghers (16:30)", zh: 'The Smith · Tony’s Di Napoli · Gallaghers 牛排', de: "The Smith (18:30) · Tony's (16:45) · Gallaghers (16:30)" }
+      }
+    ];
+
+    // ==========================================
+    // 3. COMPLETE 8-DAY CATEGORIZED ITINERARY
+    // ==========================================
+    const itineraryData = [
+      {
+        day: 1,
+        dateISO: '2026-11-21',
+        shortDate: { en: 'Nov 21', zh: '11/21 六', de: '21. Nov' },
+        fullDate: { en: 'Saturday, Nov 21', zh: '11月21日 (週六)', de: 'Samstag, 21. Nov' },
+        area: { en: 'EWR Arrival & Times Square', zh: 'EWR 抵達・時代廣場夜色', de: 'Ankunft EWR & Times Square' },
+        events: [
+          {
+            id: 'd1-1',
+            category: 'transit',
+            ticketId: 'tk-esta',
+            period: 'Morning / Arrival',
+            title: { en: 'Arrive at Newark Airport (EWR) & Midtown Transfer', zh: '抵達紐華克機場 (EWR) 並前往曼哈頓', de: 'Ankunft Newark Airport (EWR) & Transfer' },
+            story: {
+              en: 'From Newark Liberty International Airport (EWR): Take AirTrain EWR + NJ Transit train to NY Penn Station (~30 mins, ~$17.25/pp), NYC Airporter Express Bus directly to Grand Central (~$25/pp), or Taxi/Uber (~$100–$120 incl. tolls).',
+              zh: '從紐華克自由國際機場 (EWR) 進城：可搭 AirTrain EWR 轉 NJ Transit 火車至 NY Penn Station（約 30 分鐘，~$17.25/人）、搭機場快線巴士直達中央車站（~$25/人），或搭計程車/Uber（含過橋費約 $100–$120）。',
+              de: 'Vom Newark Airport (EWR): Mit AirTrain + NJ Transit zur NY Penn Station (~30 Min., ~$17,25/P.), Express-Bus zum Grand Central (~$25/P.) oder Taxi/Uber (~$100–$120).'
+            },
+            booking: { en: 'EWR Airport · ESTA Required · Activate Saily US eSIM', zh: 'EWR 機場入境 · 備妥 ESTA · 落地開啟 Saily eSIM', de: 'Flughafen EWR · ESTA Pflicht · Saily eSIM aktivieren' },
+            mapQuery: 'Newark Liberty International Airport (EWR), Newark, NJ'
+          },
+          {
+            id: 'd1-2',
+            category: 'transit',
+            period: 'Afternoon / Check-in',
+            title: { en: 'Club Quarters Hotel Grand Central', zh: '入住 Club Quarters 飯店（中央車站館）', de: 'Check-in Club Quarters Hotel Grand Central' },
+            story: {
+              en: 'Your home base for all 7 nights at 40 E 45th St. Prime Midtown location steps from Grand Central, Fifth Avenue, and Bryant Park.',
+              zh: '未來 7 晚的完美基地（40 E 45th St），緊鄰中央車站與第五大道，走路就能到多個核心景點與地鐵樞紐。',
+              de: 'Eure Basis für alle 7 Nächte (40 E 45th St) – perfekte Lage direkt am Grand Central Terminal.'
+            },
+            booking: { en: '7 Nights Base · 40 E 45th St, Midtown East', zh: '連住 7 晚基地 · 40 E 45th St', de: '7 Nächte Basis · 40 E 45th St' },
+            mapQuery: 'Club Quarters Hotel Grand Central, 40 E 45th St, New York, NY'
+          },
+          {
+            id: 'd1-3',
+            category: 'attraction',
+            period: 'Evening / Walk',
+            title: { en: 'Times Square Neon Lights Walk', zh: '時代廣場霓虹夜景漫步', de: 'Times Square Lichtermeer Spaziergang' },
+            story: {
+              en: 'Known as "The Crossroads of the World," the iconic Red Steps above the TKTS booth offer the best elevated panoramic photo spot.',
+              zh: '「世界的十字路口」，推薦走上 TKTS 售票亭上方的紅色階梯（Red Steps），是俯瞰整片巨型 LED 看板的最佳拍照機位。',
+              de: 'Die berühmten roten Stufen über dem TKTS-Schalter bieten den besten Panoramablick für Fotos.'
+            },
+            mustBuy: { en: 'M&M’s World NYC Custom Prints & I♥NY Mug', zh: 'M&M’s 紐約限定自由女神巧克力罐', de: 'M&M’s NYC Freiheitsstatuen-Edition' },
+            mapQuery: 'Times Square, Manhattan, NY'
+          },
+          {
+            id: 'd1-4',
+            category: 'dining',
+            period: 'Dinner',
+            title: { en: "John's of Times Square", zh: "John's 教堂炭火披薩", de: "John's of Times Square Pizza" },
+            story: {
+              en: 'Housed inside a historic 19th-century former Gospel Tabernacle church with stained-glass ceilings. Famous for brick-oven coal-fired thin-crust pies (whole pies only).',
+              zh: '開在 19 世紀古老教堂內的傳奇披薩店，抬頭就能看見絕美彩繪玻璃穹頂！堅持使用無煙煤磚窯現烤薄脆披薩（只賣整份不單片賣）。',
+              de: 'In einer historischen Kirche aus dem 19. Jh. mit Buntglasdecke. Berühmt für dünne Kohleofen-Pizzen.'
+            },
+            mustEat: { en: 'Coal-Fired Margherita & Pepperoni Pie · Garlic Knots', zh: '炭火瑪格麗特與義式臘腸披薩 · 香蒜麵包結', de: 'Kohleofen Margherita & Pepperoni Pizza · Garlic Knots' },
+            booking: { en: 'Est. ~$30/pp · 260 W 44th St · Walk-in', zh: '人均約 ~$30 · 260 W 44th St · 現場候位', de: 'Ca. $30/Person · 260 W 44th St · Walk-in' },
+            mapQuery: "John's of Times Square, 260 W 44th St, New York, NY"
+          }
+        ]
+      },
+      {
+        day: 2,
+        dateISO: '2026-11-22',
+        shortDate: { en: 'Nov 22', zh: '11/22 日', de: '22. Nov' },
+        fullDate: { en: 'Sunday, Nov 22', zh: '11月22日 (週日)', de: 'Sonntag, 22. Nov' },
+        area: { en: 'NHL Rangers Game & 5th Ave Windows', zh: 'MSG 冰球賽・第五大道聖誕櫥窗', de: 'NHL Rangers Spiel & 5th Ave Schaufenster' },
+        events: [
+          {
+            id: 'd2-1',
+            category: 'dining',
+            period: 'Morning / Brunch',
+            title: { en: "Friedman's (Herald Square)", zh: "Friedman's 美式早午餐", de: "Friedman's Brunch (Herald Square)" },
+            story: {
+              en: 'Sleep in and grab a hearty American brunch right next to Penn Station & MSG before puck drop.',
+              zh: '睡飽後步行到麥迪遜廣場花園旁邊的超人氣紐約在地早午餐，份量十足、美式經典早午餐水準極高，吃完直接進場看球超順路。',
+              de: 'Ausschlafen und direkt neben dem Madison Square Garden ausgiebig brunchen.'
+            },
+            mustEat: { en: 'Pastrami Eggs Benedict · Chicken & Waffles', zh: '煙燻牛肉班尼迪克蛋 · 美式炸雞鬆餅', de: 'Pastrami Eggs Benedict · Chicken & Waffles' },
+            booking: { en: 'Est. ~$30/pp · 132 W 31st St · Finish by 11:45 AM', zh: '人均約 ~$30 · 132 W 31st St · 建議 11:45 前吃完', de: 'Ca. $30/Person · 132 W 31st St · Bis 11:45 Uhr' },
+            mapQuery: "Friedman's Herald Square, 132 W 31st St, New York, NY"
+          },
+          {
+            id: 'd2-2',
+            category: 'attraction',
+            ticketId: 'tk-rangers',
+            period: '12:30 PM / Game',
+            title: { en: 'NHL Rangers Game @ Madison Square Garden', zh: 'NHL 紐約遊騎兵隊主場冰球賽', de: 'NHL Rangers Spiel im Madison Square Garden' },
+            story: {
+              en: 'Experience "The World’s Most Famous Arena." When the Rangers score, the entire arena erupts into the iconic "Goal Song" chant—electric atmosphere!',
+              zh: '走進「世界最著名球館」MSG！每當主場紐約遊騎兵隊進球時，全場萬人齊唱經典進球戰歌，現場震撼力與娛樂性滿分。',
+              de: 'Erlebt „The World’s Most Famous Arena“ live – unvergleichliche Stimmung bei jedem Tor der Rangers!'
+            },
+            mustBuy: { en: 'Official NY Rangers Puck or Knit Beanie', zh: '紐約遊騎兵隊官方紀念冰球 / 針織毛帽', de: 'Offizieller NY Rangers Puck oder Mütze' },
+            booking: { en: '12:30 PM Puck Drop · Arrive 45m early', zh: '12:30 開賽 · 提前 45 分鐘安檢入場', de: '12:30 Uhr Spielbeginn · 45 Min. vorher da sein' },
+            mapQuery: 'Madison Square Garden, 4 Pennsylvania Plaza, New York, NY'
+          },
+          {
+            id: 'd2-3',
+            category: 'attraction',
+            period: 'Evening / Stroll',
+            title: { en: 'Fifth Ave Holiday Windows & Rockefeller Center', zh: '第五大道聖誕櫥窗與洛克斐勒中心', de: 'Fifth Ave Weihnachtsschaufenster & Rockefeller Center' },
+            story: {
+              en: 'Walk up Fifth Avenue to see theatrical holiday window displays at Saks Fifth Avenue (with its nightly light show) and Rockefeller Center.',
+              zh: '沿著第五大道散步，欣賞 Saks Fifth Avenue 夜間音樂燈光秀與各大旗艦百貨宛如藝術品般的聖誕主題櫥窗。',
+              de: 'Spaziergang entlang der 5th Ave zu den legendären Weihnachtsschaufenstern von Saks & Rockefeller Center.'
+            },
+            mapQuery: 'Rockefeller Center, 45 Rockefeller Plaza, New York, NY'
+          },
+          {
+            id: 'd2-4',
+            category: 'dining',
+            period: 'Dinner / K-Town 4 Picks',
+            title: { en: 'Koreatown / Midtown Dinner (4 Curated Options)', zh: '韓國城 / 中城晚餐四選一', de: 'Koreatown / Midtown Abendessen (4 Optionen)' },
+            story: {
+              en: 'Pick your vibe tonight: Turntable Chicken Jazz (Korean fried chicken + vinyl jazz), Jongro BBQ (charcoal K-BBQ), Izakaya MEW (hidden Japanese tapas), or Tonchin (Michelin-recommended Tokyo tonkotsu ramen).',
+              zh: '今晚從四家高人氣名店擇一：Turntable（韓式炸雞配黑膠爵士樂）、Jongro BBQ（復古炭火燒肉）、Izakaya MEW（隱密地下室日式居酒屋）或 Tonchin（米其林推薦東京豚骨拉麵）。',
+              de: 'Wählt euren Favoriten: Turntable Chicken Jazz, Jongro BBQ, Izakaya MEW oder Tonchin Ramen.'
+            },
+            mustEat: { en: 'Turntable Soy Garlic Wings · Jongro Galbi · Tonchin Ramen', zh: 'Turntable 蒜味醬油炸雞 · Jongro 牛肋排 · Tonchin 豚骨拉麵', de: 'Turntable Soy Garlic Wings · Jongro Galbi · Tonchin Ramen' },
+            booking: { en: 'Turntable / Jongro BBQ / Izakaya MEW / Tonchin', zh: '四家候選：Turntable / Jongro / MEW / Tonchin', de: '4 Optionen: Turntable / Jongro / MEW / Tonchin' },
+            mapQuery: 'Koreatown, Manhattan, NY 10001'
+          }
+        ]
+      },
+      {
+        day: 3,
+        dateISO: '2026-11-23',
+        shortDate: { en: 'Nov 23', zh: '11/23 一', de: '23. Nov' },
+        fullDate: { en: 'Monday, Nov 23', zh: '11月23日 (週一)', de: 'Montag, 23. Nov' },
+        area: { en: 'Lower Manhattan · Helicopter · Sunset Cruise', zh: '下城金融區・直升機・日落遊船', de: 'Downtown · Helikopter · Sunset-Bootstour' },
+        events: [
+          {
+            id: 'd3-1',
+            category: 'attraction',
+            period: 'Morning / Financial District',
+            title: { en: 'Ground Zero, Oculus & Wall Street', zh: '9/11 紀念水池、Oculus 與華爾街銅牛', de: 'Ground Zero, Oculus & Wall Street' },
+            story: {
+              en: 'Stand beside the twin reflecting pools at the 9/11 Memorial, admire Santiago Calatrava’s dove-like Oculus hub, then walk down to the Charging Bull and NYSE.',
+              zh: '在雙子星遺址反思池感受寧靜莊嚴，走進純白飛鳥造型的 Oculus 車站拍照，再沿著百老匯大道散步到華爾街銅牛與紐約證交所。',
+              de: 'Besucht die 9/11 Memorial Pools, den spektakulären Oculus-Bahnhof, Charging Bull & NYSE.'
+            },
+            mapQuery: '9/11 Memorial & Museum, 180 Greenwich St, New York, NY'
+          },
+          {
+            id: 'd3-2',
+            category: 'dining',
+            period: 'Lunch / FiDi',
+            title: { en: "Luke's Lobster FiDi", zh: "Luke's Lobster 緬因龍蝦堡", de: "Luke's Lobster FiDi" },
+            story: {
+              en: 'Tucked on historic cobblestone South William Street, serving chilled, wild-caught Maine lobster tossed with lemon butter and secret seasoning in a toasted split-top bun.',
+              zh: '藏身在復古石板路 South William St 的龍蝦堡名店！烤得香酥的奶油麵包夾滿冰鎮彈牙的緬因州野生龍蝦肉，鮮甜無比。',
+              de: 'In der historischen South William St: gekühltes Maine-Hummerfleisch im gerösteten Butter-Brötchen.'
+            },
+            mustEat: { en: 'Maine-Style Lobster Roll · New England Clam Chowder', zh: '經典緬因冷食龍蝦堡 · 新英格蘭蛤蜊濃湯', de: 'Maine Lobster Roll · New England Clam Chowder' },
+            booking: { en: 'Est. ~$30/pp · 26 S William St', zh: '人均約 ~$30 · 26 S William St', de: 'Ca. $30/Person · 26 S William St' },
+            mapQuery: "Luke's Lobster FiDi, 26 S William St, New York, NY"
+          },
+          {
+            id: 'd3-3',
+            category: 'attraction',
+            ticketId: 'tk-heli',
+            period: '2:30 PM / Highlight',
+            title: { en: 'Manhattan Helicopter Tour (Doors-On)', zh: '曼哈頓高空直升機體驗 (關門版)', de: 'Manhattan Helikopter-Rundflug (Doors-On)' },
+            story: {
+              en: 'Soar up the Hudson River from Pier 6 past the Statue of Liberty, One World Trade Center, Empire State Building, and Central Park—an unforgettable birthday highlight!',
+              zh: '從下城 6 號碼頭起飛沿哈德遜河盤旋，以神明視角俯瞰自由女神、世貿一號大樓、帝國大廈與中央公園，生日之旅最震撼的回憶！',
+              de: 'Fliegt vom Pier 6 entlang des Hudson vorbei an Freiheitsstatue, One WTC, Empire State Building & Central Park.'
+            },
+            booking: { en: '2:30 PM · Pier 6 Heliport · Est. ~$240–$290/pp · Bring Passport', zh: '14:30 起飛 · Pier 6 · 約 ~$240–$290/人 · 必帶護照', de: '14:30 · Pier 6 Heliport · Ca. $240–$290/P. · Reisepass' },
+            mapQuery: 'Downtown Manhattan Heliport, 6 East River Piers, New York, NY'
+          },
+          {
+            id: 'd3-4',
+            category: 'attraction',
+            ticketId: 'tk-boat',
+            period: 'Evening / Sunset Boat',
+            title: { en: 'Circle Line Sunset Boat Tour (Statue of Liberty)', zh: 'Circle Line 自由女神日落夜景遊船', de: 'Circle Line Sunset-Bootstour (Freiheitsstatue)' },
+            story: {
+              en: 'November sunset hits around 4:30 PM—watch golden hour fade into glittering Manhattan skyline lights right beside Lady Liberty.',
+              zh: '11 月底紐約約 16:30 日落，從黃昏金色餘暉看到曼哈頓摩天大樓萬家燈火亮起，船隻還會停在自由女神像正前方讓大家拍個夠！',
+              de: 'Sonnenuntergang gegen 16:30 Uhr: erlebt die Skyline im Abendrot direkt vor der Freiheitsstatue.'
+            },
+            booking: { en: 'Est. ~$35–$40/pp · Pier 83 (Allow 35m taxi from Pier 6)', zh: '約 ~$35–$40/人 · Pier 83（直升機後建議搭計程車前往）', de: 'Ca. $35–$40/P. · Pier 83 (Ca. 35 Min. Taxi ab Pier 6)' },
+            mapQuery: 'Circle Line Sightseeing Cruises, Pier 83 W 42nd St, New York, NY'
+          }
+        ]
+      },
+      {
+        day: 4,
+        dateISO: '2026-11-24',
+        shortDate: { en: 'Nov 24', zh: '11/24 二', de: '24. Nov' },
+        fullDate: { en: 'Tuesday, Nov 24', zh: '11月24日 (週二)', de: 'Dienstag, 24. Nov' },
+        area: { en: 'The Met, The Arconia & Central Park', zh: '大都會博物館・破案三人行公寓・中央公園', de: 'The Met, The Arconia & Central Park' },
+        events: [
+          {
+            id: 'd4-1',
+            category: 'attraction',
+            ticketId: 'tk-met',
+            period: 'Morning / Museum',
+            title: { en: 'The Metropolitan Museum of Art (The Met)', zh: '大都會藝術博物館 (The Met)', de: 'The Metropolitan Museum of Art (The Met)' },
+            story: {
+              en: 'Focus on 2–3 iconic exhibits: the Temple of Dendur (Egyptian Wing), European Paintings (Van Gogh & Monet), and the American Wing.',
+              zh: '館藏橫跨五千年，建議鎖定 2–3 個精華展區：埃及丹鐸神廟（Temple of Dendur）、歐洲繪畫館（梵谷自畫像、莫內睡蓮）與美國翼庭院。',
+              de: 'Fokus auf 2–3 Hauptbereiche: Tempel von Dendur (Ägypten), Europäische Malerei (Van Gogh & Monet) & American Wing.'
+            },
+            mustBuy: { en: 'The Met Canvas Tote Bag & Van Gogh Postcards', zh: 'The Met 經典帆布托特包・梵谷畫作明信片', de: 'The Met Canvas Tote Bag & Van Gogh Postkarten' },
+            booking: { en: 'Opens 10:00 AM · Ticket $30/pp · 1000 5th Ave', zh: '10:00 開館 · 門票 $30/人 · 1000 5th Ave', de: 'Ab 10:00 Uhr · Ticket $30/Person · 1000 5th Ave' },
+            mapQuery: 'The Metropolitan Museum of Art, 1000 5th Ave, New York, NY'
+          },
+          {
+            id: 'd4-2',
+            category: 'attraction',
+            period: 'Afternoon / TV Landmark & Park',
+            title: { en: 'The Arconia (The Belnord) & Central Park Stroll', zh: '破案三人行公寓 (The Arconia) 與中央公園', de: 'The Arconia (The Belnord) & Central Park' },
+            story: {
+              en: 'See The Belnord (filming location for "The Arconia" in Only Murders in the Building at 225 W 86th St), then walk through Central Park to Bethesda Fountain and Bow Bridge.',
+              zh: '打卡美劇《破案三人行》取景地 The Belnord 公寓（225 W 86th St），接著漫步穿越中央公園至畢士達噴泉（Bethesda Fountain）與弓橋（Bow Bridge）。',
+              de: 'Besucht The Belnord („The Arconia“ aus Only Murders in the Building) und spaziert zur Bethesda Fountain & Bow Bridge.'
+            },
+            mapQuery: 'The Belnord, 225 W 86th St, New York, NY'
+          },
+          {
+            id: 'd4-3',
+            category: 'attraction',
+            period: 'Evening / Flexible',
+            title: { en: 'Lincoln Square Evening Stroll', zh: '林肯中心廣場夜間散策', de: 'Lincoln Square Abendspaziergang' },
+            story: {
+              en: 'Flexible evening around Lincoln Square—admire the illuminated Revson Fountain and travertine arches of Lincoln Center right before dinner.',
+              zh: '晚餐前在林肯表演藝術中心廣場悠閒散步，欣賞夜間打燈的噴泉與大都會歌劇院巨型拱門。',
+              de: 'Entspannter Abend rund um den Lincoln Square und den beleuchteten Brunnen des Lincoln Centers.'
+            },
+            mapQuery: 'Lincoln Center for the Performing Arts, New York, NY'
+          },
+          {
+            id: 'd4-4',
+            category: 'dining',
+            ticketId: 'tk-dining',
+            period: '6:30 PM / Reserved Dinner',
+            title: { en: 'The Smith (Lincoln Square)', zh: 'The Smith 美式小酒館 (已訂位)', de: 'The Smith (Lincoln Square) – Reserviert' },
+            story: {
+              en: 'Lively Modern American brasserie right across from Lincoln Center, loved by New Yorkers for energetic vibes and elevated comfort dishes.',
+              zh: '林肯中心對面氣氛超熱鬧的現代美式小酒館，紐約在地人聚餐愛店，餐點水準穩定且調酒很棒。',
+              de: 'Lebhafte amerikanische Brasserie gegenüber vom Lincoln Center mit tollen Klassikern.'
+            },
+            mustEat: { en: 'Mac & Cheese · Brick-Pressed Chicken · Spicy Rigatoni', zh: '松露起司通心粉 · 磚壓烤半雞 · 辣味番茄管麵', de: 'Mac & Cheese · Brick-Pressed Chicken · Spicy Rigatoni' },
+            booking: { en: 'BOOKED · OpenTable 18:30 (6:30 PM) · Est. ~$40/pp', zh: '已訂位 · OpenTable 18:30 · 人均約 ~$40', de: 'GEBUCHT · OpenTable 18:30 Uhr · Ca. $40/P.' },
+            mapQuery: 'The Smith Lincoln Square, 1900 Broadway, New York, NY'
+          }
+        ]
+      },
+      {
+        day: 5,
+        dateISO: '2026-11-25',
+        shortDate: { en: 'Nov 25', zh: '11/25 三', de: '25. Nov' },
+        fullDate: { en: 'Wednesday, Nov 25', zh: '11月25日 (週三)', de: 'Mittwoch, 25. Nov' },
+        area: { en: 'Friends Experience & Broadway Night', zh: '六人行體驗館・百老匯音樂劇之夜', de: 'Friends Experience & Broadway Abend' },
+        events: [
+          {
+            id: 'd5-1',
+            category: 'attraction',
+            ticketId: 'tk-friends',
+            period: 'Morning / Interactive',
+            title: { en: 'The FRIENDS™ Experience', zh: '《六人行》經典片場沉浸體驗館', de: 'The FRIENDS™ Experience' },
+            story: {
+              en: 'Step onto life-size recreated sets including Joey & Chandler’s recliners, Monica’s purple apartment door, and the iconic Central Perk orange couch.',
+              zh: '走進 1:1 還原的經典美劇片場！從 Monica 的紫色大門、Chandler 的皮躺椅到 Central Perk 咖啡廳橘色沙發，工作人員還會幫忙拍專業合照。',
+              de: 'Originalgetreue Kulissen von Monicas Apartment bis zum Central Perk Sofa – perfekt für Erinnerungsfotos.'
+            },
+            mustBuy: { en: 'Central Perk Oversized Ceramic Mug', zh: 'Central Perk 經典大尺寸陶瓷馬克杯', de: 'Central Perk Keramiktasse' },
+            booking: { en: 'Est. ~$50/pp · 130 E 23rd St', zh: '門票約 ~$50/人 · 130 E 23rd St', de: 'Ca. $50/Person · 130 E 23rd St' },
+            mapQuery: 'The FRIENDS Experience New York, 130 E 23rd St, New York, NY'
+          },
+          {
+            id: 'd5-2',
+            category: 'dining',
+            period: 'Lunch / Light Bite',
+            title: { en: "Ruby's Cafe (Murray Hill)", zh: "Ruby's Cafe 澳式人氣咖啡館", de: "Ruby's Cafe (Murray Hill)" },
+            story: {
+              en: 'Cozy Australian-inspired neighborhood cafe famous for its Bronte Burger and creamy pasta. Insider tip: Share one dish since your huge Italian dinner is at 4:45 PM!',
+              zh: '紐約超紅的澳式風格小館！因為下午 16:45 就要吃份量超驚人的義式家庭料理，建議中午兩人分食一份漢堡或義大利麵留胃口。',
+              de: 'Beliebtes australisches Café. Tipp: Teilt euch ein Gericht, da das große Abendessen schon um 16:45 Uhr ist!'
+            },
+            mustEat: { en: 'Bronte Burger (Sweet Chili Mayo) · Spicy Vodka Pasta', zh: '招牌 Bronte 甜辣醬牛肉堡 · 辣味伏特加筆管麵', de: 'Bronte Burger · Spicy Vodka Pasta' },
+            booking: { en: 'Est. ~$35/pp · 442 3rd Ave · Share 1 dish!', zh: '人均約 ~$35 · 442 3rd Ave · 建議兩人分食留胃口', de: 'Ca. $35/Person · 442 3rd Ave · Am besten teilen!' },
+            mapQuery: "Ruby's Cafe Murray Hill, 442 3rd Ave, New York, NY"
+          },
+          {
+            id: 'd5-3',
+            category: 'dining',
+            ticketId: 'tk-dining',
+            period: '4:45 PM / Pre-Theater Dinner',
+            title: { en: "Tony's Di Napoli (Midtown)", zh: "Tony's Di Napoli 家庭式義式料理 (已訂位)", de: "Tony's Di Napoli (Midtown) – Reserviert" },
+            story: {
+              en: 'Classic Theater District institution serving massive Southern Italian family-style platters designed for sharing right before curtain call.',
+              zh: '百老匯劇院區最經典的南義家庭式餐廳！每道菜都是巨無霸分享盤（Family-style），上菜速度超快，完全不用擔心趕不上 19:00 開演。',
+              de: 'Legendäres Theater-District-Restaurant mit riesigen süditalienischen Platten zum Teilen.'
+            },
+            mustEat: { en: 'Chicken Parmigiana · Rigatoni alla Vodka · Giant Meatballs', zh: '巨無霸帕瑪森起司炸雞排 · 義式大肉丸', de: 'Chicken Parmigiana · Rigatoni alla Vodka · Meatballs' },
+            booking: { en: 'BOOKED · OpenTable 16:45 (4:45 PM) · 147 W 43rd St', zh: '已訂位 · OpenTable 16:45 · 147 W 43rd St', de: 'GEBUCHT · OpenTable 16:45 Uhr · 147 W 43rd St' },
+            mapQuery: "Tony's Di Napoli Midtown, 147 W 43rd St, New York, NY"
+          },
+          {
+            id: 'd5-4',
+            category: 'attraction',
+            ticketId: 'tk-broadway',
+            period: '7:00 PM / Broadway Show',
+            title: { en: 'Broadway: The Book of Mormon', zh: '百老匯音樂劇《摩門經》', de: 'Broadway-Musical: The Book of Mormon' },
+            story: {
+              en: 'Created by the makers of South Park, this 9-time Tony Award winner is widely considered the funniest musical on Broadway.',
+              zh: '《南方四賤客》主創團隊打造、橫掃 9 座東尼獎的百老匯史上最爆笑喜劇音樂劇！英文幽默直接且節奏明快，現場笑聲完全停不下來。',
+              de: 'Von den South-Park-Machern: 9-facher Tony-Award-Gewinner und das witzigste Musical am Broadway.'
+            },
+            mustBuy: { en: 'Free Playbill Program + Official Show Magnet', zh: '免費節目單 Playbill（可請演員簽名）・劇院磁鐵', de: 'Kostenloses Playbill-Programmheft & Magnet' },
+            booking: { en: "19:00 Curtain · Eugene O'Neill Theatre · TodayTix (~$125–$175/pp)", zh: '19:00 開演 · Eugene O’Neill 劇院 · TodayTix (~$125–$175/人)', de: "19:00 Uhr · Eugene O'Neill Theatre · TodayTix (~$125–$175/P.)" },
+            mapQuery: "Eugene O'Neill Theatre, 230 W 49th St, New York, NY"
+          }
+        ]
+      },
+      {
+        day: 6,
+        dateISO: '2026-11-26',
+        shortDate: { en: 'Nov 26', zh: '11/26 四', de: '26. Nov' },
+        fullDate: { en: 'Thursday, Nov 26 (Thanksgiving)', zh: '11月26日 (週四 · 感恩節)', de: 'Donnerstag, 26. Nov (Thanksgiving)' },
+        area: { en: '100th Macy’s Parade · Steakhouse · NFL', zh: '百週年感恩節大遊行・百年牛排館・NFL', de: '100. Macy’s Parade · Steakhouse · NFL' },
+        events: [
+          {
+            id: 'd6-1',
+            category: 'attraction',
+            period: 'Morning / 8:30 AM Parade',
+            title: { en: "100th Macy's Thanksgiving Day Parade", zh: '梅西百貨第 100 屆感恩節大遊行', de: "100. Macy's Thanksgiving Day Parade" },
+            story: {
+              en: 'Milestone 100th anniversary edition! Giant character balloons, Broadway performances, and marching bands march down 6th Ave. Arrive by 7:30–8:00 AM with warm layers & thermos.',
+              zh: '極具紀念意義的第 100 屆感恩節大遊行！巨型氣球花車、百老匯歌舞與樂隊沿第 6 大道行進。建議 07:30–08:00 前到 6th Ave 卡位並穿暖。',
+              de: 'Historische 100. Jubiläumsausgabe entlang der 6th Ave! Spätestens um 07:30–08:00 Uhr warm angezogen einen Platz sichern.'
+            },
+            booking: { en: '6th Ave · Free · Arrive 07:30–08:00 AM', zh: '第 6 大道沿線 · 免費觀看 · 建議 07:30–08:00 卡位', de: '6th Ave · Kostenlos · Ankunft 07:30–08:00 Uhr' },
+            mapQuery: '6th Avenue and West 42nd Street, New York, NY'
+          },
+          {
+            id: 'd6-2',
+            category: 'transit',
+            period: 'Afternoon / Recharge',
+            title: { en: 'Relax & Recharge at the Hotel', zh: '回飯店休息回暖・充電準備晚宴', de: 'Hotel-Pause & Aufwärmen' },
+            story: {
+              en: 'Head back to Club Quarters Hotel Grand Central to warm up, rest your feet after standing for the parade, and change for Thanksgiving dinner.',
+              zh: '早上在冷風中站了好幾個小時看遊行，下午回飯店吹暖氣、喝杯熱茶休息充電，傍晚再美美出門吃感恩節大餐！',
+              de: 'Zurück ins Hotel zum Aufwärmen und Ausruhen nach der Parade.'
+            },
+            mapQuery: 'Club Quarters Hotel Grand Central, 40 E 45th St, New York, NY'
+          },
+          {
+            id: 'd6-3',
+            category: 'dining',
+            ticketId: 'tk-dining',
+            period: '4:30 PM / Thanksgiving Feast',
+            title: { en: 'Gallaghers Steakhouse (Est. 1927)', zh: 'Gallaghers 百年乾式熟成牛排館 (已訂位)', de: 'Gallaghers Steakhouse (seit 1927) – Reserviert' },
+            story: {
+              en: 'Founded in 1927 as a Prohibition speakeasy, famous for its glass-walled dry-aging meat locker right at the entrance and hickory-grilled steaks.',
+              zh: '創立於 1927 年禁酒令時期的傳奇牛排館！門口整面玻璃牆展示著壯觀的乾式熟成牛肉櫃，用山胡桃木炭火現烤，感恩節氣氛滿分。',
+              de: '1927 als Speakeasy gegründet – berühmt für seine gläserne Dry-Aging-Fleischkammer direkt am Eingang.'
+            },
+            mustEat: { en: 'Dry-Aged Bone-In Ribeye · Thanksgiving Turkey Special · Creamed Spinach', zh: '乾式熟成帶骨肋眼牛排 · 感恩節火雞特餐 · 奶油菠菜', de: 'Dry-Aged Bone-In Ribeye · Thanksgiving Truthahn · Creamed Spinach' },
+            booking: { en: 'BOOKED · OpenTable 16:30 (4:30 PM) · Est. ~$100/pp', zh: '已訂位 · OpenTable 16:30 · 人均約 ~$100', de: 'GEBUCHT · OpenTable 16:30 Uhr · Ca. $100/P.' },
+            mapQuery: 'Gallaghers Steakhouse, 228 W 52nd St, New York, NY'
+          },
+          {
+            id: 'd6-4',
+            category: 'dining',
+            period: '8:20 PM / Sports Bar',
+            title: { en: 'NFL Thanksgiving Match @ Stout NYC', zh: 'Stout NYC 運動酒吧看 NFL 感恩節夜賽', de: 'NFL Thanksgiving Match @ Stout NYC' },
+            story: {
+              en: 'Massive multi-level Irish sports pub right near Penn Station with dozens of HD screens, craft beers, and electric Thanksgiving football energy.',
+              zh: '就在賓州車站旁的超大型美式運動酒吧，整面牆都是超大螢幕轉播 20:20 開打的 NFL 感恩節大戰，點杯美式精釀啤酒體驗最道地節日夜！',
+              de: 'Riesiger Sports-Pub nahe Penn Station mit dutzenden Screens und bester Thanksgiving-Football-Stimmung.'
+            },
+            mustEat: { en: 'Brooklyn Lager Draft · Buffalo Wings · Pretzel Bites', zh: 'Brooklyn Lager 生啤 · 水牛城辣雞翅', de: 'Brooklyn Lager vom Fass · Buffalo Wings' },
+            booking: { en: 'Kickoff 20:20 (8:20 PM) · 133 W 33rd St', zh: '20:20 開球 · 133 W 33rd St', de: 'Kickoff 20:20 Uhr · 133 W 33rd St' },
+            mapQuery: 'Stout NYC Flagship, 133 W 33rd St, New York, NY'
+          }
+        ]
+      },
+      {
+        day: 7,
+        dateISO: '2026-11-27',
+        shortDate: { en: 'Nov 27', zh: '11/27 五', de: '27. Nov' },
+        fullDate: { en: 'Friday, Nov 27 (Black Friday)', zh: '11月27日 (週五 · 黑色星期五)', de: 'Freitag, 27. Nov (Black Friday)' },
+        area: { en: 'Soho Black Friday & Bryant Park Winter Village', zh: '蘇活區黑五採購・布萊恩公園聖誕市集', de: 'Soho Black Friday & Bryant Park Winter Village' },
+        events: [
+          {
+            id: 'd7-1',
+            category: 'attraction',
+            period: 'Morning / Black Friday Beauty',
+            title: { en: 'Black Friday in Soho: Sephora & M.A.C Pro Store', zh: '蘇活區黑五彩妝首衝：Sephora & M.A.C', de: 'Black Friday in Soho: Sephora & M.A.C Pro Store' },
+            story: {
+              en: 'Both stores sit just 2 minutes apart on Broadway in Soho! Hit Sephora right at opening for Lancôme Teint Idole 105W, then walk down to M.A.C Pro Store.',
+              zh: '兩家店都在蘇活區 Broadway 大道上，走路僅 2 分鐘！建議一開門就先衝 Sephora 搶購蘭蔻 105W 粉底與黑五限定組合，再去 M.A.C 旗艦店。',
+              de: 'Beide Stores liegen nur 2 Gehminuten voneinander entfernt auf dem Broadway in Soho – morgens direkt hin!'
+            },
+            mustBuy: { en: 'Lancôme Teint Idole 105W · M.A.C Pro Lipsticks & Holiday Sets', zh: 'Lancôme 蘭蔻 105W 粉底液 · M.A.C 唇膏與黑五禮盒', de: 'Lancôme 105W Foundation · M.A.C Pro Sets' },
+            mapQuery: 'Sephora Soho, 557 Broadway, New York, NY'
+          },
+          {
+            id: 'd7-2',
+            category: 'dining',
+            period: 'Brunch / Soho',
+            title: { en: 'Citizen of Soho (Australian Brunch)', zh: 'Citizen of Soho 網美澳式早午餐', de: 'Citizen of Soho (Australischer Brunch)' },
+            story: {
+              en: 'Bright, stylish Australian cafe on Mulberry/Broome St known for vibrant avocado toast, pulled pork eggs benedict, and specialty flat whites.',
+              zh: '蘇活區口碑極佳的澳式早午餐店，酪梨酸種麵包、手撕豬肉班尼迪克蛋與澳式白咖啡（Flat White）都超有水準。',
+              de: 'Stylisches australisches Café in Soho mit legendärem Avocado-Toast, Eggs Benedict und Flat White.'
+            },
+            mustEat: { en: 'Smashed Avocado Toast · Pulled Pork Benny · Flat White', zh: '招牌酪梨酸種麵包 · 手撕豬肉班尼迪克蛋 · Flat White', de: 'Smashed Avocado Toast · Pulled Pork Benny · Flat White' },
+            booking: { en: 'Est. ~$35/pp · 298 Mulberry St', zh: '人均約 ~$35 · 298 Mulberry St', de: 'Ca. $35/Person · 298 Mulberry St' },
+            mapQuery: 'Citizen of Soho, 298 Mulberry St, New York, NY'
+          },
+          {
+            id: 'd7-3',
+            category: 'attraction',
+            period: 'Afternoon / Shopping',
+            title: { en: 'Soho Boutiques, Cast-Iron Streets & Cafes', zh: '蘇活區鑄鐵建築群與精品咖啡巡禮', de: 'Soho Boutiquen, Cast-Iron Viertel & Cafés' },
+            story: {
+              en: 'Wander the cobblestone streets of Greene St, Mercer St, and Spring St—famous for historic 19th-century cast-iron architecture and flagship boutiques.',
+              zh: '漫步在 Greene St 與 Spring St 的石板路上，欣賞 19 世紀復古鑄鐵建築與逃生梯，沿途逛遍潮流選物店與旗艦品牌。',
+              de: 'Bummelt durch die Kopfsteinpflasterstraßen von Greene & Spring St mit ihrer historischen Gusseisen-Architektur.'
+            },
+            mapQuery: 'SoHo, New York, NY'
+          },
+          {
+            id: 'd7-4',
+            category: 'attraction',
+            period: 'Evening / Holiday Market',
+            title: { en: 'Bryant Park Winter Village', zh: '布萊恩公園歐洲聖誕市集與溜冰場', de: 'Bryant Park Winter Village Weihnachtsmarkt' },
+            story: {
+              en: 'Over 170 European-style glass holiday shops surrounding an ice skating rink right behind the New York Public Library—grab hot chocolate & festive snacks.',
+              zh: '紐約最有聖誕氛圍的戶外市集！超過 170 間玻璃小屋環繞著中央溜冰場，買杯熱可可或熱蘋果酒配現烤點心超浪漫。',
+              de: 'Über 170 Weihnachtshütten rund um die Eisbahn direkt hinter der New York Public Library.'
+            },
+            mustEat: { en: 'Hot Chocolate · Hot Apple Cider · Chimney Cake', zh: '濃郁熱可可 · 熱肉桂蘋果酒 · 匈牙利煙囪捲', de: 'Heiße Schokolade · Hot Apple Cider · Baumstriezel' },
+            mapQuery: 'Bank of America Winter Village at Bryant Park, New York, NY'
+          }
+        ]
+      },
+      {
+        day: 8,
+        dateISO: '2026-11-28',
+        shortDate: { en: 'Nov 28', zh: '11/28 六', de: '28. Nov' },
+        fullDate: { en: 'Saturday, Nov 28 (Departure)', zh: '11月28日 (週六 · 返程日)', de: 'Samstag, 28. Nov (Rückflug)' },
+        area: { en: 'Grand Central · Los Tacos · EWR Departure', zh: '中央車站穹頂・傳奇塔可・EWR 返程', de: 'Grand Central · Los Tacos · Abflug EWR' },
+        events: [
+          {
+            id: 'd8-1',
+            category: 'attraction',
+            period: 'Morning / Landmark',
+            title: { en: 'Grand Central Terminal & Whispering Gallery', zh: '中央車站星空穹頂與回音廊', de: 'Grand Central Terminal & Flüstergalerie' },
+            story: {
+              en: 'Right by your hotel! Admire the turquoise zodiac ceiling in the Main Concourse, the four-faced opal clock, and test the acoustic Whispering Gallery outside the Oyster Bar.',
+              zh: '就在飯店旁邊！欣賞主大廳夢幻的綠松石星座穹頂與四面貓眼石時鐘，別忘了去 Oyster Bar 門口的拱門對角線測試神奇「回音廊」！',
+              de: 'Direkt neben dem Hotel: bewundert die Sternbild-Decke, die Opal-Uhr und testet die akustische Flüstergalerie.'
+            },
+            mustBuy: { en: "Trader Joe's Snacks & Grand Central Market Gifts", zh: 'Trader Joe’s 超市零食伴手禮・中央車站市集', de: "Trader Joe's Snacks & Grand Central Market Souvenirs" },
+            mapQuery: 'Grand Central Terminal, 89 E 42nd St, New York, NY'
+          },
+          {
+            id: 'd8-2',
+            category: 'dining',
+            period: 'Lunch / Must-Eat Farewell',
+            title: { en: 'Los Tacos No. 1 (Grand Central)', zh: 'Los Tacos No. 1 紐約第一名現壓塔可', de: 'Los Tacos No. 1 (Grand Central)' },
+            story: {
+              en: 'Widely ranked as the best street tacos in NYC—corn tortillas are pressed and grilled to order right in front of you.',
+              zh: '紐約在地人公認第一名的墨西哥塔可！現場手工現壓現烤玉米餅皮香氣十足，上飛機前再吃一頓最道地的紐約美味。',
+              de: 'Die besten Street-Tacos in NYC – Maistortillas werden frisch vor euren Augen gepresst und gegrillt.'
+            },
+            mustEat: { en: 'Adobada (Marinated Pork w/ Pineapple) · Carne Asada Taco', zh: 'Adobada 醃烤豬肉鳳梨塔可 · Carne Asada 炭烤牛排塔可', de: 'Adobada Taco (Schwein & Ananas) · Carne Asada' },
+            booking: { en: 'Est. ~$20/pp · Order "Con Todo" (With Everything)', zh: '人均約 ~$20 · 點餐說 "Con Todo" 加滿配料', de: 'Ca. $20/Person · Bestellt „Con Todo“ (mit allem)' },
+            mapQuery: 'Los Tacos No. 1, 125 Park Ave, New York, NY'
+          },
+          {
+            id: 'd8-3',
+            category: 'transit',
+            period: 'Evening / Airport Transfer',
+            title: { en: 'Luggage Pickup & Head to Newark Airport (EWR)', zh: '回飯店領取行李並前往紐華克機場 (EWR)', de: 'Gepäck abholen & Transfer zum Flughafen EWR' },
+            story: {
+              en: 'Grab your luggage at Club Quarters Hotel Grand Central and head to Newark Liberty International Airport (EWR) via NJ Transit from NY Penn Station + AirTrain EWR, Airport Express Bus, or Taxi/Uber.',
+              zh: '回飯店領取寄放行李後，提前 3.5～4 小時出發前往紐華克自由國際機場 (EWR)（可從 NY Penn Station 搭 NJ Transit 轉 AirTrain EWR，或搭計程車/Uber）。',
+              de: 'Gepäck im Hotel abholen und 3,5–4 Std. vor Abflug zum Newark Liberty International Airport (EWR) fahren.'
+            },
+            booking: { en: 'Depart for EWR Airport 3.5–4 hrs before flight', zh: '起飛前 3.5–4 小時出發前往 EWR 機場', de: '3,5–4 Std. vor Abflug zum Flughafen EWR starten' },
+            mapQuery: 'Newark Liberty International Airport (EWR), Newark, NJ'
+          }
+        ]
+      }
+    ];
+
+    // ==========================================
+    // 4. FOOD, BLACK FRIDAY & PACKING DATA
+    // ==========================================
+    const fastFoodChains = [
+      {
+        name: 'Shake Shack',
+        tag: { en: 'NYC Original', zh: '紐約發跡必吃', de: 'NYC Kult-Burger' },
+        desc: {
+          en: '100% Angus beef smash burgers born in Madison Square Park. Order ShackBurger, SmokeShack & Cheese Fries.',
+          zh: '從麥迪遜廣場公園起家的東岸漢堡霸主，推薦 ShackBurger、煙燻培根 SmokeShack 與波浪起司薯條。',
+          de: '100% Angus-Beef Burger aus dem Madison Square Park. Tipp: ShackBurger, SmokeShack & Cheese Fries.'
+        },
+        query: 'Shake Shack near Midtown Manhattan NY'
+      },
+      {
+        name: 'Los Tacos No. 1',
+        tag: { en: '#1 NYC Tacos', zh: '紐約第一塔可', de: '#1 Tacos in NYC' },
+        desc: {
+          en: 'Hand-pressed corn tortillas grilled to order. Adobada (marinated pork + pineapple) "Con Todo" is unbeatable.',
+          zh: '現場手工現壓玉米餅皮，必點 Adobada 醃烤豬肉鳳梨塔可並說 "Con Todo"（全加）。',
+          de: 'Handgepresste Maistortillas – unbedingt Adobada (Schwein & Ananas) „Con Todo“ bestellen.'
+        },
+        query: 'Los Tacos No. 1 Manhattan NY'
+      },
+      {
+        name: 'The Halal Guys',
+        tag: { en: 'Street Cart Legend', zh: '街頭餐車傳奇', de: 'Street-Food Legende' },
+        desc: {
+          en: '53rd & 6th legend. Combo Platter over yellow rice with White Sauce (add Red Sauce drop by drop—extremely spicy!).',
+          zh: '中城 53 街餐車傳奇，必點雞牛綜合拼盤淋滿白醬（紅辣醬極辣，務必一滴一滴加）。',
+          de: 'Legende an der 53rd & 6th: Combo Platter mit White Sauce (Vorsicht: Red Sauce ist extrem scharf!).'
+        },
+        query: 'The Halal Guys Midtown Manhattan NY'
+      },
+      {
+        name: "Raising Cane's",
+        tag: { en: 'Chicken Fingers', zh: '爆紅炸雞柳條', de: 'Chicken Fingers' },
+        desc: {
+          en: 'Flagship right in Times Square. Get The Box Combo with Texas Toast and iconic Cane’s dipping sauce.',
+          zh: '時代廣場有超大型旗艦店，只賣現炸雞柳條，靈魂在於黑胡椒微辣秘製 Cane’s Sauce 沾醬。',
+          de: 'Flagship am Times Square: The Box Combo mit Texas Toast und der berühmten Cane’s Sauce.'
+        },
+        query: "Raising Cane's Chicken Fingers Times Square NY"
+      },
+      {
+        name: 'Chick-fil-A',
+        tag: { en: 'Closed Sundays', zh: '週日公休注意', de: 'Sonntags geschlossen' },
+        desc: {
+          en: 'Juicy pressure-cooked chicken sandwich with pickles, waffle fries & Chick-fil-A sauce. Closed on Sundays!',
+          zh: '全美滿意度冠軍炸雞漢堡，搭配格紋薯條與招牌煙燻蜂蜜芥末醬（注意：週日全美公休）。',
+          de: 'Saftiges Chicken Sandwich mit Waffle Fries & Chick-fil-A Sauce (Achtung: sonntags geschlossen!).'
+        },
+        query: 'Chick-fil-A Manhattan NY'
+      },
+      {
+        name: 'Five Guys',
+        tag: { en: 'Custom Burgers', zh: '免費配料漢堡', de: 'Custom Burger' },
+        desc: {
+          en: 'All 15+ toppings free, complimentary roasted peanuts, and huge portions of peanut-oil fries (Little size feeds 2–3).',
+          zh: '十幾種配料免費任加、店內免費剝花生，花生油現炸薯條份量極大（2～3 人點 Little 即可）。',
+          de: 'Über 15 kostenlose Toppings, gratis Erdnüsse und riesige Pommes-Portionen (Little reicht für 2–3).'
+        },
+        query: 'Five Guys Midtown Manhattan NY'
+      },
+      {
+        name: 'Chipotle Mexican Grill',
+        tag: { en: 'Fresh & Veggies', zh: '清爽高纖餐碗', de: 'Frisch & Gesund' },
+        desc: {
+          en: 'Build-your-own Burrito Bowl with brown rice, black beans, grilled chicken, fresh salsas & guacamole.',
+          zh: '自選配料無餅皮餐碗（Burrito Bowl），蔬菜與蛋白質比例高，旅遊途中平衡大魚大肉首選。',
+          de: 'Burrito Bowl nach Wahl mit Reis, schwarzen Bohnen, gegrilltem Hähnchen, Salsa & Guacamole.'
+        },
+        query: 'Chipotle Mexican Grill Midtown Manhattan NY'
+      }
+    ];
+
+    const defaultShoppingList = [
+      { id: 'sh-1', text: 'Lancôme Teint Idole 105W (Sephora Soho · 557 Broadway)', done: false },
+      { id: 'sh-2', text: 'M.A.C Pro Store Lipsticks & Holiday Sets (506 Broadway)', done: false },
+      { id: 'sh-3', text: 'The Met Canvas Tote Bag & Van Gogh Souvenirs', done: false },
+      { id: 'sh-4', text: 'Central Perk Oversized Mug (FRIENDS Experience)', done: false },
+      { id: 'sh-5', text: "Trader Joe's Snacks & Everything But The Bagel Seasoning", done: false }
+    ];
+
+    const defaultPackingGroups = [
+      {
+        id: 'pk-docs',
+        title: { en: 'Documents & Money (Carry-On)', zh: '證件、票券與金流（隨身必帶）', de: 'Dokumente & Geld (Handgepäck)' },
+        items: [
+          { id: 'p-1', label: { en: 'Passports (2x) & Valid ESTA Printout/PDF', zh: '護照 (2本) 與 ESTA 美國旅行授權許可', de: 'Reisepässe (2x) & ESTA-Genehmigung' }, done: true },
+          { id: 'p-2', label: { en: 'German Residence Permit (Aufenthaltstitel)', zh: '德國居留證 (Aufenthaltstitel · 返程入境必備)', de: 'Aufenthaltstitel (für Rückreise nach DE)' }, done: true },
+          { id: 'p-3', label: { en: 'No-FX-Fee Credit Cards + $50–$100 Small Bills', zh: '免海外手續費信用卡 + $50–$100 美金小鈔', de: 'Kreditkarten + $50–$100 Bargeld (kleine Scheine)' }, done: false }
+        ]
+      },
+      {
+        id: 'pk-clothes',
+        title: { en: 'Outerwear & Layered Outfits', zh: '防風雨外套與多層次穿搭', de: 'Jacken & Zwiebellook-Kleidung' },
+        items: [
+          { id: 'p-4', label: { en: 'Pink Canada Goose Trench + Lightweight Down Jacket', zh: '粉紅加拿大鵝風衣 ＋ 短款輕便羽絨外套（可疊穿）', de: 'Rosa Canada Goose Trench + Leichte Daunenjacke' }, done: true },
+          { id: 'p-5', label: { en: '2 Dresses (Neutral tones) + 1 Skirt + 2 Fleece Tights', zh: '2 件百搭色洋裝 ＋ 1 件短裙 ＋ 2 雙光腿神器', de: '2 Kleider + 1 Rock + 2 Thermostrumpfhosen' }, done: true },
+          { id: 'p-6', label: { en: 'Travel Trousers + Jeans + Thermal Leggings', zh: '搭機西裝褲 ＋ 牛仔褲 ＋ 德絨內搭褲', de: 'Bequeme Stoffhose + Jeans + Thermoleggings' }, done: true },
+          { id: 'p-7', label: { en: '3–4 Thermal Tops + Sweater + Knit Vest + White Shirt', zh: '3–4 件德絨/發熱打底衣 ＋ 毛衣 ＋ 毛背心 ＋ 白襯衫', de: '3–4 Thermoshirts + Pullover + Strickweste + Hemd' }, done: true },
+          { id: 'p-8', label: { en: 'Scarf, Beanie, Touchscreen Gloves & Comfy Walking Shoes', zh: '圍巾、毛帽、觸控手套 ＋ 好走的防滑休閒鞋/靴', de: 'Schal, Mütze, Touchscreen-Handschuhe & bequeme Schuhe' }, done: false }
+        ]
+      },
+      {
+        id: 'pk-tech',
+        title: { en: 'Electronics, Care & Essentials', zh: '3C 轉接頭、高保濕與常備藥', de: 'Elektronik, Pflege & Reiseapotheke' },
+        items: [
+          { id: 'p-9', label: { en: 'US Type-A Plug Adapters (2–3x) & Power Bank (Carry-on)', zh: '美規兩孔扁頭轉接頭 (2–3個) ＋ 行動電源（隨身）', de: 'US-Reiseadapter Typ A (2–3x) & Powerbank (Handgepäck)' }, done: false },
+          { id: 'p-10', label: { en: 'High-Moisture Cream, Lip Balm, Hand Cream & Toothbrush', zh: '高保濕面霜、護唇膏、護手霜 ＋ 牙刷牙膏組', de: 'Feuchtigkeitscreme, Lippenpflege, Handcreme & Zahnbürste' }, done: false },
+          { id: 'p-11', label: { en: 'Stomach Meds, Painkillers, Band-Aids, Umbrella & Thermos', zh: '腸胃藥、止痛藥、OK 繃、抗風摺疊傘 ＋ 保溫瓶', de: 'Magenmittel, Schmerztabletten, Pflaster, Schirm & Thermos' }, done: false }
+        ]
+      }
+    ];
+
+    // ==========================================
+    // 5. STATE MANAGEMENT & LOCAL STORAGE
+    // ==========================================
+    const STORAGE_KEY = 'nyc2026_app_state_v3';
+    const WEATHER_CACHE_KEY = 'nyc2026_weather_cache_v1';
+
+    let state = {
+      lang: 'en',
+      activeTab: 'itinerary',
+      selectedDay: 1,
+      categoryFilter: 'all',
+      completedEvents: {},
+      tickets: JSON.parse(JSON.stringify(defaultTicketSlots)),
+      ticketImages: {},
+      shoppingList: JSON.parse(JSON.stringify(defaultShoppingList)),
+      packingGroups: JSON.parse(JSON.stringify(defaultPackingGroups)),
+      flights: {
+        outNo: 'BER → EWR (Update Flight #)',
+        outRef: 'PNR / Ref: ---',
+        outTime: 'Nov 21 · Arrive Newark (EWR)',
+        inNo: 'EWR → BER (Update Flight #)',
+        inRef: 'PNR / Ref: ---',
+        inTime: 'Nov 28 · Evening Departure (EWR)'
+      },
+      expenses: [
+        { id: 'ex-1', title: 'Broadway: The Book of Mormon (2x TodayTix)', amount: 300, category: 'Tickets', payer: 'Athena' },
+        { id: 'ex-2', title: 'Manhattan Helicopter Tour (2x Pier 6)', amount: 530, category: 'Tickets', payer: 'Konrad' },
+        { id: 'ex-3', title: 'Circle Line Sunset Boat Tour (2x)', amount: 76, category: 'Tickets', payer: 'Konrad' },
+        { id: 'ex-4', title: 'The Met Museum Admission (2x)', amount: 60, category: 'Tickets', payer: 'Athena' },
+        { id: 'ex-5', title: 'The FRIENDS™ Experience (2x)', amount: 100, category: 'Tickets', payer: 'Athena' }
+      ],
+      tipCalc: {
+        subtotal: 85,
+        includeTax: true,
+        tipPct: 20
+      }
+    };
+
+    let activeUploadSlotId = null;
+    let activeModalTicketId = null;
+    let weatherState = {
+      source: 'fallback',
+      daily: {}
+    };
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = {
+            ...state,
+            ...parsed,
+            flights: { ...state.flights, ...(parsed.flights || {}) },
+            tipCalc: { ...state.tipCalc, ...(parsed.tipCalc || {}) },
+            ticketImages: parsed.ticketImages || {},
+            tickets: Array.isArray(parsed.tickets) && parsed.tickets.length ? parsed.tickets : state.tickets
+          };
+        }
+      } catch (e) {
+        console.warn('Could not load saved state:', e);
+      }
+
+      try {
+        const cachedW = localStorage.getItem(WEATHER_CACHE_KEY);
+        if (cachedW) {
+          const parsedW = JSON.parse(cachedW);
+          if (parsedW && parsedW.daily) {
+            weatherState = { source: 'cached', daily: parsedW.daily };
+          }
+        }
+      } catch (e) {
+        console.warn('Could not load weather cache:', e);
+      }
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (e) {
+        showToast('Storage full! Try removing large unused images.');
+      }
+    }
+
+    // ==========================================
+    // 6. LIVE NYC WEATHER + OFFLINE CACHE
+    // ==========================================
+    const seasonalFallbackWeather = {
+      '2026-11-21': { max: 11, min: 4, pop: 20, code: 2 },
+      '2026-11-22': { max: 10, min: 3, pop: 15, code: 1 },
+      '2026-11-23': { max: 9, min: 2, pop: 30, code: 3 },
+      '2026-11-24': { max: 8, min: 2, pop: 40, code: 61 },
+      '2026-11-25': { max: 9, min: 3, pop: 20, code: 2 },
+      '2026-11-26': { max: 7, min: 1, pop: 15, code: 1 },
+      '2026-11-27': { max: 8, min: 2, pop: 25, code: 2 },
+      '2026-11-28': { max: 9, min: 2, pop: 20, code: 1 }
+    };
+
+    function getWeatherEmoji(code) {
+      if (code === 0) return '☀️';
+      if (code === 1 || code === 2) return '⛅';
+      if (code === 3) return '☁️';
+      if (code >= 45 && code <= 48) return '🌫️';
+      if (code >= 51 && code <= 67) return '🌧️';
+      if (code >= 71 && code <= 77) return '❄️';
+      if (code >= 80 && code <= 82) return '🌦️';
+      return '🌤️';
+    }
+
+    async function fetchNycWeather() {
+      try {
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=40.7580&longitude=-73.9855&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=America%2FNew_York&forecast_days=14';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('Weather API failed');
+        const data = await res.json();
+        if (data && data.daily && Array.isArray(data.daily.time)) {
+          const mapped = {};
+          data.daily.time.forEach((dateStr, idx) => {
+            mapped[dateStr] = {
+              max: Math.round(data.daily.temperature_2m_max[idx]),
+              min: Math.round(data.daily.temperature_2m_min[idx]),
+              pop: data.daily.precipitation_probability_max[idx] ?? 10,
+              code: data.daily.weathercode[idx] ?? 1
+            };
+          });
+          weatherState = { source: 'live', daily: mapped };
+          localStorage.setItem(WEATHER_CACHE_KEY, JSON.stringify({ updatedAt: Date.now(), daily: mapped }));
+          if (state.activeTab === 'itinerary') renderApp();
+        }
+      } catch (err) {
+        // Offline or out-of-range: keep cached or seasonal fallback
+      }
+    }
+
+    function getDayWeather(dateISO) {
+      if (weatherState.daily && weatherState.daily[dateISO]) {
+        return { ...weatherState.daily[dateISO], source: weatherState.source };
+      }
+      const keys = Object.keys(weatherState.daily || {});
+      if (keys.length > 0 && weatherState.source === 'live') {
+        const idx = Math.min(keys.length - 1, Math.max(0, parseInt(dateISO.slice(-2), 10) - 21));
+        if (weatherState.daily[keys[idx]]) {
+          return { ...weatherState.daily[keys[idx]], source: 'live' };
+        }
+      }
+      const fb = seasonalFallbackWeather[dateISO] || { max: 9, min: 2, pop: 20, code: 2 };
+      return { ...fb, source: weatherState.source === 'cached' ? 'cached' : 'fallback' };
+    }
+
+    // ==========================================
+    // 7. HELPER & UI ACTIONS
+    // ==========================================
+    function t(obj) {
+      if (!obj) return '';
+      if (typeof obj === 'string') return obj;
+      return obj[state.lang] || obj.en || '';
+    }
+
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function getMapsUrl(query) {
+      return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.firstElementChild.textContent = msg;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2200);
+    }
+
+    function copyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        document.execCommand('copy');
+        showToast(i18n[state.lang].copiedMsg);
+      } catch (e) {
+        showToast(text);
+      }
+      document.body.removeChild(ta);
+    }
+
+    function setLanguage(lang) {
+      state.lang = lang;
+      saveState();
+      renderApp();
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      saveState();
+      renderApp();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function selectDay(dayVal) {
+      state.selectedDay = dayVal;
+      saveState();
+      renderApp();
+    }
+
+    function setCategoryFilter(cat) {
+      state.categoryFilter = cat;
+      saveState();
+      renderApp();
+    }
+
+    function toggleEventDone(id) {
+      state.completedEvents[id] = !state.completedEvents[id];
+      saveState();
+      renderApp();
+    }
+
+    // ==========================================
+    // 8. TICKET QR UPLOAD, COMPRESSION & MODAL
+    // ==========================================
+    function triggerUploadQr(slotId) {
+      activeUploadSlotId = slotId;
+      const input = document.getElementById('qrFileInput');
+      if (input) {
+        input.value = '';
+        input.click();
+      }
+    }
+
+    function handleTicketFileUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file || !activeUploadSlotId) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const img = new Image();
+        img.onload = function () {
+          // Compress screenshot so QR remains crisp while fitting comfortably in localStorage
+          const maxDim = 960;
+          let w = img.width;
+          let h = img.height;
+          if (w > maxDim || h > maxDim) {
+            if (w > h) {
+              h = Math.round((h * maxDim) / w);
+              w = maxDim;
+            } else {
+              w = Math.round((w * maxDim) / h);
+              h = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          state.ticketImages[activeUploadSlotId] = compressedDataUrl;
+          saveState();
+          showToast(i18n[state.lang].qrSavedToast);
+          renderApp();
+
+          // If modal was open for replacement, refresh modal image
+          if (activeModalTicketId === activeUploadSlotId) {
+            openQrModal(activeUploadSlotId);
+          }
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function openQrModal(slotId) {
+      const slot = state.tickets.find(s => s.id === slotId);
+      const imgData = state.ticketImages[slotId];
+      if (!slot) return;
+      if (!imgData) {
+        triggerUploadQr(slotId);
+        return;
+      }
+      activeModalTicketId = slotId;
+      const dict = i18n[state.lang];
+      document.getElementById('qrModalDate').textContent = slot.dayTag || '';
+      document.getElementById('qrModalTitle').textContent = t(slot.title);
+      document.getElementById('qrModalImg').src = imgData;
+      document.getElementById('qrModalNote').textContent = t(slot.note);
+      document.getElementById('qrModalBrightnessTip').textContent = dict.brightnessTip;
+      document.getElementById('qrReplaceLabel').textContent = dict.replaceQr;
+      document.getElementById('qrDeleteLabel').textContent = dict.deleteQr;
+      document.getElementById('qrScannerModal').classList.remove('hidden');
+    }
+
+    function closeQrModal() {
+      activeModalTicketId = null;
+      document.getElementById('qrScannerModal').classList.add('hidden');
+    }
+
+    function triggerReplaceQr() {
+      if (activeModalTicketId) {
+        triggerUploadQr(activeModalTicketId);
+      }
+    }
+
+    function deleteCurrentQr() {
+      if (!activeModalTicketId) return;
+      delete state.ticketImages[activeModalTicketId];
+      saveState();
+      closeQrModal();
+      showToast(i18n[state.lang].qrDeletedToast);
+      renderApp();
+    }
+
+    function addCustomTicketSlot() {
+      const nameEl = document.getElementById('newTicketName');
+      const dateEl = document.getElementById('newTicketDate');
+      const name = (nameEl?.value || '').trim();
+      if (!name) return;
+      const dayTag = (dateEl?.value || '').trim() || 'NYC 2026';
+      const newSlot = {
+        id: 'tk-' + Date.now(),
+        dayTag,
+        title: { en: name, zh: name, de: name },
+        note: { en: 'Custom uploaded ticket', zh: '自訂上傳票券', de: 'Eigenes Ticket' },
+        custom: true
+      };
+      state.tickets.push(newSlot);
+      saveState();
+      renderApp();
+    }
+
+    function deleteCustomTicketSlot(slotId) {
+      state.tickets = state.tickets.filter(s => s.id !== slotId);
+      delete state.ticketImages[slotId];
+      saveState();
+      renderApp();
+    }
+
+    // ==========================================
+    // 9. INSTALL / SAVE TO IPHONE MODAL
+    // ==========================================
+    function openInstallModal() {
+      const dict = i18n[state.lang];
+      document.getElementById('installModalTitle').textContent = dict.installTitle;
+      document.getElementById('downloadBtnLabel').textContent = dict.downloadBtn;
+
+      const body = document.getElementById('installModalBody');
+      if (state.lang === 'zh') {
+        body.innerHTML = `
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-matcha text-xs">方式一：最穩定離線版（推薦存進 iPhone「檔案」App）</p>
+            <p class="text-[11px] text-sumi">1. 點下方 <b>「下載離線 .html 檔案」</b> 儲存至電腦或手機。</p>
+            <p class="text-[11px] text-sumi">2. 用 AirDrop / LINE 傳到 iPhone，選擇 <b>「儲存到檔案 (Save to Files)」</b>。</p>
+            <p class="text-[11px] text-sumi">3. 在紐約地鐵無網路時，直接點開「檔案」App 即可秒開行程、記帳與 QR Code！</p>
+          </div>
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-maple text-xs">方式二：變成 iPhone 桌面獨立 App 圖示</p>
+            <p class="text-[11px] text-sumi">1. 將下載的 <code class="bg-sand px-1 rounded">nyc_itinerary_app.html</code> 拖曳上傳至免費靜態空間（如 <b>Tiiny.host</b> 或 <b>GitHub Pages</b>）。</p>
+            <p class="text-[11px] text-sumi">2. 用 iPhone <b>Safari</b> 開啟該網址，點底部中央 <b>「分享 ⬆️」→「加入主畫面」</b>，桌面就會出現專屬 <b>NYC 2026</b> 圖示！</p>
+          </div>
+        `;
+      } else if (state.lang === 'de') {
+        body.innerHTML = `
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-matcha text-xs">Option A: 100% Offline in der iPhone „Dateien“-App</p>
+            <p class="text-[11px] text-sumi">1. Unten auf <b>„.html Datei herunterladen“</b> tippen.</p>
+            <p class="text-[11px] text-sumi">2. Auf dem iPhone unter <b>„In Dateien sichern“</b> speichern – funktioniert komplett ohne Internet in der U-Bahn.</p>
+          </div>
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-maple text-xs">Option B: Als eigenes App-Icon auf dem Home-Bildschirm</p>
+            <p class="text-[11px] text-sumi">1. Datei kostenlos bei <b>Tiiny.host</b> oder <b>GitHub Pages</b> hochladen.</p>
+            <p class="text-[11px] text-sumi">2. Link in <b>Safari</b> öffnen → <b>Teilen ⬆️ → „Zum Home-Bildschirm“</b> wählen.</p>
+          </div>
+        `;
+      } else {
+        body.innerHTML = `
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-matcha text-xs">Option A: 100% Offline via iPhone "Files" App (Recommended)</p>
+            <p class="text-[11px] text-sumi">1. Tap <b>"Download .html File"</b> below to save this self-contained app.</p>
+            <p class="text-[11px] text-sumi">2. Send via AirDrop to your iPhone and choose <b>"Save to Files"</b>.</p>
+            <p class="text-[11px] text-sumi">3. Tap the file anytime in NYC—even underground in the subway with zero signal!</p>
+          </div>
+          <div class="muji-card p-3 space-y-1.5">
+            <p class="font-bold text-maple text-xs">Option B: Add "NYC 2026" Icon to iPhone Home Screen</p>
+            <p class="text-[11px] text-sumi">1. Drag & drop the downloaded <code class="bg-sand px-1 rounded">nyc_itinerary_app.html</code> onto <b>Tiiny.host</b> or <b>GitHub Pages</b>.</p>
+            <p class="text-[11px] text-sumi">2. Open the link in iPhone <b>Safari</b> → tap <b>Share ⬆️ → "Add to Home Screen"</b> for a native full-screen app icon.</p>
+          </div>
+        `;
+      }
+      document.getElementById('installModal').classList.remove('hidden');
+    }
+
+    function closeInstallModal() {
+      document.getElementById('installModal').classList.add('hidden');
+    }
+
+    function downloadStandaloneHtml() {
+      const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'nyc_itinerary_app.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('Downloading nyc_itinerary_app.html...');
+    }
+
+    // ==========================================
+    // 10. RENDERERS FOR ALL 5 TABS
+    // ==========================================
+    function renderHeaderAndNav() {
+      const dict = i18n[state.lang];
+      const titleMap = {
+        itinerary: dict.appTitle,
+        tickets: dict.ticketsTitle,
+        food: dict.foodTitle,
+        travel: dict.travelTitle,
+        packing: dict.packingTitle
+      };
+      document.getElementById('headerTitle').textContent = titleMap[state.activeTab] || dict.appTitle;
+
+      // Update header ticket count badge
+      const uploadedCount = Object.keys(state.ticketImages || {}).length;
+      const badge = document.getElementById('headerTicketBadge');
+      if (badge) {
+        if (uploadedCount > 0) {
+          badge.textContent = uploadedCount;
+          badge.classList.remove('hidden');
+        } else {
+          badge.classList.add('hidden');
+        }
+      }
+
+      // Language buttons
+      ['en', 'zh', 'de'].forEach(l => {
+        const btn = document.getElementById(`lang-${l}`);
+        if (!btn) return;
+        if (state.lang === l) {
+          btn.className = 'px-2 py-1 rounded-full text-[11px] font-bold transition-all bg-sumi text-white shadow-sm';
+        } else {
+          btn.className = 'px-2 py-1 rounded-full text-[11px] font-bold transition-all text-ash hover:text-sumi';
+        }
+      });
+
+      // Bottom nav labels & active color
+      ['itinerary', 'tickets', 'food', 'travel', 'packing'].forEach(tab => {
+        const btn = document.getElementById(`nav-${tab}`);
+        const lbl = document.getElementById(`navLabel-${tab}`);
+        if (lbl) lbl.textContent = dict.nav[tab];
+        if (btn) {
+          if (state.activeTab === tab) {
+            btn.classList.remove('text-ash');
+            btn.classList.add('text-matcha');
+          } else {
+            btn.classList.remove('text-matcha');
+            btn.classList.add('text-ash');
+          }
+        }
+      });
+
+      // Day selector bar
+      const dayWrapper = document.getElementById('daySelectorWrapper');
+      if (state.activeTab === 'itinerary') {
+        dayWrapper.classList.remove('hidden');
+        let pills = `
+          <button onclick="selectDay('all')" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+            state.selectedDay === 'all'
+              ? 'bg-matcha text-white border-matcha shadow-sm'
+              : 'bg-paper text-ash border-hairline hover:border-matcha'
+          }">${dict.allDays}</button>
+        `;
+        itineraryData.forEach(d => {
+          const active = state.selectedDay === d.day;
+          pills += `
+            <button onclick="selectDay(${d.day})" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+              active
+                ? 'bg-matcha text-white border-matcha shadow-sm'
+                : 'bg-paper text-sumi border-hairline hover:border-matcha'
+            }">D${d.day} · ${t(d.shortDate)}</button>
+          `;
+        });
+        dayWrapper.innerHTML = pills;
+      } else {
+        dayWrapper.classList.add('hidden');
+      }
+    }
+
+    function renderEventCard(ev) {
+      const dict = i18n[state.lang];
+      const done = !!state.completedEvents[ev.id];
+
+      const catStyles = {
+        attraction: { border: 'border-l-4 border-l-matcha', badge: 'bg-matcha-light text-matcha-dark' },
+        dining: { border: 'border-l-4 border-l-maple', badge: 'bg-maple-light text-maple-dark' },
+        transit: { border: 'border-l-4 border-l-slateink', badge: 'bg-slateink-light text-slateink-dark' }
+      };
+      const st = catStyles[ev.category] || catStyles.attraction;
+
+      const hasUploadedTicket = ev.ticketId && !!state.ticketImages[ev.ticketId];
+      const ticketButtonHtml = ev.ticketId
+        ? `<button onclick="openQrModal('${ev.ticketId}')" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-[11px] font-bold transition-colors ${
+            hasUploadedTicket
+              ? 'bg-maple text-white shadow-sm hover:bg-maple-dark'
+              : 'bg-maple-light text-maple-dark border border-maple/30 hover:bg-maple hover:text-white'
+          }">
+            <span>🎫</span>
+            <span>${dict.ticketBtn}</span>
+          </button>`
+        : '';
+
+      return `
+        <article class="muji-card ${st.border} p-3.5 transition-opacity ${done ? 'opacity-60' : ''}">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5 min-w-0">
+              <button onclick="toggleEventDone('${ev.id}')" aria-label="Toggle completed"
+                class="mt-0.5 w-5 h-5 rounded-full border flex items-center justify-center shrink-0 transition-colors ${
+                  done ? 'bg-matcha border-matcha text-white' : 'border-ash/40 bg-washi'
+                }">
+                ${done ? '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>' : ''}
+              </button>
+              <div class="min-w-0">
+                <div class="flex flex-wrap items-center gap-1.5 mb-1">
+                  <span class="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider ${st.badge}">${dict.catBadge[ev.category]}</span>
+                  <span class="text-[11px] font-medium text-ash">${escapeHtml(ev.period)}</span>
+                </div>
+                <h3 class="text-[14px] font-bold text-sumi leading-snug ${done ? 'line-through' : ''}">${escapeHtml(t(ev.title))}</h3>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-1.5 shrink-0">
+              ${ticketButtonHtml}
+              <a href="${getMapsUrl(ev.mapQuery)}" target="_blank" rel="noopener noreferrer"
+                 class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-washi border border-hairline text-[11px] font-semibold text-sumi hover:border-matcha hover:text-matcha transition-colors">
+                <svg class="w-3.5 h-3.5 text-maple" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                <span class="hidden xs:inline">${dict.navigate}</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="mt-2.5 pl-7 space-y-2 text-xs leading-relaxed">
+            ${ev.story ? `<p class="text-ash">${escapeHtml(t(ev.story))}</p>` : ''}
+
+            ${ev.mustEat ? `
+              <div class="bg-maple-light/65 border border-maple/20 rounded-xl px-2.5 py-1.5">
+                <span class="font-bold text-maple-dark">🍽 ${dict.mustEatLabel}: </span>
+                <span class="font-semibold text-sumi">${escapeHtml(t(ev.mustEat))}</span>
+              </div>
+            ` : ''}
+
+            ${ev.mustBuy ? `
+              <div class="bg-amberink-light/80 border border-amberink/20 rounded-xl px-2.5 py-1.5">
+                <span class="font-bold text-amberink">🛍 ${dict.mustBuyLabel}: </span>
+                <span class="font-semibold text-sumi">${escapeHtml(t(ev.mustBuy))}</span>
+              </div>
+            ` : ''}
+
+            ${ev.booking ? `
+              <div class="bg-matcha-light/80 border border-matcha/25 rounded-xl px-2.5 py-1.5">
+                <span class="font-bold text-matcha-dark">🎫 ${dict.bookingLabel}: </span>
+                <span class="font-bold text-sumi">${escapeHtml(t(ev.booking))}</span>
+              </div>
+            ` : ''}
+          </div>
+        </article>
+      `;
+    }
+
+    function renderItineraryTab() {
+      const dict = i18n[state.lang];
+      const daysToRender = state.selectedDay === 'all'
+        ? itineraryData
+        : itineraryData.filter(d => d.day === state.selectedDay);
+
+      let html = `
+        <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+          ${[
+            { key: 'all', label: dict.filterAll },
+            { key: 'attraction', label: dict.filterAttraction },
+            { key: 'dining', label: dict.filterDining },
+            { key: 'transit', label: dict.filterTransit }
+          ].map(f => `
+            <button onclick="setCategoryFilter('${f.key}')" class="px-3 py-1 rounded-full text-xs font-semibold border transition-all ${
+              state.categoryFilter === f.key
+                ? 'bg-sumi text-white border-sumi'
+                : 'bg-paper text-ash border-hairline hover:text-sumi'
+            }">${f.label}</button>
+          `).join('')}
+        </div>
+      `;
+
+      daysToRender.forEach(dayObj => {
+        const w = getDayWeather(dayObj.dateISO);
+        const sourceLabel = w.source === 'live' ? dict.weatherLive : (w.source === 'cached' ? dict.weatherCached : dict.weatherFallback);
+        const filteredEvents = state.categoryFilter === 'all'
+          ? dayObj.events
+          : dayObj.events.filter(e => e.category === state.categoryFilter);
+
+        html += `
+          <section class="space-y-2.5 pt-1">
+            <!-- Weather & Day Header Card -->
+            <div class="muji-card p-3.5 bg-gradient-to-r from-paper to-sand/50">
+              <div class="flex items-center justify-between gap-2">
+                <div>
+                  <span class="text-[11px] font-bold uppercase tracking-wider text-matcha">DAY ${dayObj.day} · ${escapeHtml(t(dayObj.fullDate))}</span>
+                  <h2 class="text-[15px] font-bold text-sumi mt-0.5">${escapeHtml(t(dayObj.area))}</h2>
+                </div>
+                <div class="text-right shrink-0 bg-paper/90 border border-hairline rounded-xl px-2.5 py-1.5">
+                  <div class="flex items-center justify-end gap-1.5">
+                    <span class="text-base leading-none">${getWeatherEmoji(w.code)}</span>
+                    <span class="text-xs font-bold text-sumi">${w.max}° / ${w.min}°C</span>
+                  </div>
+                  <p class="text-[10px] text-ash mt-0.5">${dict.precip} ${w.pop}% · ${sourceLabel}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Event Cards -->
+            <div class="space-y-2.5">
+              ${filteredEvents.map(ev => renderEventCard(ev)).join('')}
+            </div>
+          </section>
+        `;
+      });
+
+      return html;
+    }
+
+    function renderTicketsTab() {
+      const dict = i18n[state.lang];
+      const totalSlots = state.tickets.length;
+      const uploadedCount = state.tickets.filter(s => !!state.ticketImages[s.id]).length;
+
+      let html = `
+        <!-- Offline Vault Banner -->
+        <div class="muji-card p-4 bg-gradient-to-br from-matcha-light/70 via-paper to-sand/50 border-matcha/30">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-matcha text-white text-[10px] font-bold tracking-wider">
+                OFFLINE VAULT · ${uploadedCount}/${totalSlots}
+              </span>
+              <h2 class="text-sm font-bold text-sumi mt-1.5">${dict.walletBannerTitle}</h2>
+              <p class="text-xs text-ash leading-relaxed mt-1">${dict.walletBannerDesc}</p>
+            </div>
+            <span class="text-2xl shrink-0">🎫</span>
+          </div>
+        </div>
+
+        <!-- Ticket Slots Grid -->
+        <div class="space-y-2.5">
+          ${state.tickets.map(slot => {
+            const imgData = state.ticketImages[slot.id];
+            return `
+              <div class="muji-card p-3.5 ${imgData ? 'border-l-4 border-l-matcha' : 'border-l-4 border-l-hairline'}">
+                <div class="flex items-start justify-between gap-2.5">
+                  <div class="min-w-0 flex-1">
+                    <div class="flex items-center gap-1.5 mb-1">
+                      <span class="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider ${
+                        imgData ? 'bg-matcha-light text-matcha-dark' : 'bg-sand text-ash'
+                      }">${imgData ? dict.qrReadyBadge : dict.qrEmptyBadge}</span>
+                      <span class="text-[11px] font-semibold text-maple truncate">${escapeHtml(slot.dayTag)}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-sumi leading-snug">${escapeHtml(t(slot.title))}</h3>
+                    <p class="text-xs text-ash mt-0.5">${escapeHtml(t(slot.note))}</p>
+                  </div>
+
+                  ${imgData ? `
+                    <button onclick="openQrModal('${slot.id}')" class="w-14 h-14 rounded-xl border border-hairline bg-white p-1 shrink-0 overflow-hidden shadow-sm hover:border-matcha">
+                      <img src="${imgData}" alt="QR Preview" class="w-full h-full object-cover rounded-lg" />
+                    </button>
+                  ` : ''}
+                </div>
+
+                <div class="mt-3 pt-2.5 border-t border-hairline flex items-center gap-2">
+                  ${imgData ? `
+                    <button onclick="openQrModal('${slot.id}')" class="flex-1 py-2 px-3 rounded-xl bg-matcha text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-matcha-dark transition-colors">
+                      <span>🔍</span>
+                      <span>${dict.showQr}</span>
+                    </button>
+                    <button onclick="triggerUploadQr('${slot.id}')" class="py-2 px-3 rounded-xl bg-washi border border-hairline text-xs font-semibold text-sumi hover:border-matcha">
+                      ${dict.replaceQr}
+                    </button>
+                  ` : `
+                    <button onclick="triggerUploadQr('${slot.id}')" class="flex-1 py-2 px-3 rounded-xl bg-sumi text-white text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-matcha transition-colors">
+                      <span>📷</span>
+                      <span>${dict.uploadQr}</span>
+                    </button>
+                  `}
+                  ${slot.custom ? `
+                    <button onclick="deleteCustomTicketSlot('${slot.id}')" class="p-2 rounded-xl text-ash hover:text-maple">✕</button>
+                  ` : ''}
+                </div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+
+        <!-- Add Custom Ticket Slot Card -->
+        <div class="muji-card p-3.5 space-y-2.5">
+          <h3 class="text-xs font-bold text-sumi uppercase tracking-wider">${dict.addCustomTicketTitle}</h3>
+          <input id="newTicketName" type="text" placeholder="${dict.ticketNamePlaceholder}"
+            class="w-full px-3 py-2 rounded-xl bg-washi border border-hairline text-xs text-sumi focus:outline-none focus:border-matcha" />
+          <div class="flex gap-2">
+            <input id="newTicketDate" type="text" placeholder="${dict.ticketDatePlaceholder}"
+              class="flex-1 px-3 py-2 rounded-xl bg-washi border border-hairline text-xs text-sumi focus:outline-none focus:border-matcha" />
+            <button onclick="addCustomTicketSlot()" class="px-4 py-2 rounded-xl bg-matcha text-white text-xs font-bold hover:bg-matcha-dark">
+              ${dict.addTicketBtn}
+            </button>
+          </div>
+        </div>
+      `;
+
+      return html;
+    }
+
+    function toggleShopItem(id) {
+      const item = state.shoppingList.find(i => i.id === id);
+      if (item) {
+        item.done = !item.done;
+        saveState();
+        renderApp();
+      }
+    }
+
+    function addShopItem() {
+      const input = document.getElementById('newShopInput');
+      const val = (input?.value || '').trim();
+      if (!val) return;
+      state.shoppingList.push({ id: 'sh-' + Date.now(), text: val, done: false });
+      saveState();
+      renderApp();
+    }
+
+    function deleteShopItem(id) {
+      state.shoppingList = state.shoppingList.filter(i => i.id !== id);
+      saveState();
+      renderApp();
+    }
+
+    function renderFoodAndShopTab() {
+      const dict = i18n[state.lang];
+      const bookedSpots = [
+        {
+          day: 'Nov 24 · 18:30',
+          name: 'The Smith (Lincoln Square)',
+          note: 'OpenTable Booked · Modern American Brasserie (~$40/pp)',
+          query: 'The Smith Lincoln Square, 1900 Broadway, New York, NY'
+        },
+        {
+          day: 'Nov 25 · 16:45',
+          name: "Tony's Di Napoli (Midtown)",
+          note: 'OpenTable Booked · Pre-Theater Family Italian (147 W 43rd St)',
+          query: "Tony's Di Napoli Midtown, 147 W 43rd St, New York, NY"
+        },
+        {
+          day: 'Nov 26 · 16:30',
+          name: 'Gallaghers Steakhouse',
+          note: 'OpenTable Booked · Thanksgiving Dry-Aged Steak (~$100/pp)',
+          query: 'Gallaghers Steakhouse, 228 W 52nd St, New York, NY'
+        }
+      ];
+
+      return `
+        <!-- Confirmed Dining Reservations -->
+        <div class="muji-card p-3.5 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-matcha">${dict.bookedDiningTitle}</h2>
+            <button onclick="openQrModal('tk-dining')" class="text-[11px] font-bold text-maple underline">🎫 QR</button>
+          </div>
+          <div class="space-y-2">
+            ${bookedSpots.map(b => `
+              <div class="p-2.5 rounded-xl bg-washi border border-hairline flex items-center justify-between gap-2">
+                <div class="min-w-0">
+                  <span class="text-[10px] font-bold text-maple uppercase">${b.day}</span>
+                  <p class="text-xs font-bold text-sumi truncate">${b.name}</p>
+                  <p class="text-[11px] text-ash truncate">${b.note}</p>
+                </div>
+                <a href="${getMapsUrl(b.query)}" target="_blank" rel="noopener noreferrer"
+                   class="shrink-0 px-2.5 py-1.5 rounded-lg bg-paper border border-hairline text-[11px] font-semibold text-sumi hover:border-matcha">
+                  ${dict.navigate}
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Black Friday Soho Shopping Checklist -->
+        <div class="muji-card p-3.5 space-y-2.5">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-amberink">${dict.blackFridayTitle}</h2>
+          <div class="space-y-1.5">
+            ${state.shoppingList.map(item => `
+              <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-washi border border-hairline">
+                <button onclick="toggleShopItem('${item.id}')" class="flex items-center gap-2.5 text-left min-w-0 flex-1">
+                  <span class="w-4 h-4 rounded border flex items-center justify-center shrink-0 ${
+                    item.done ? 'bg-matcha border-matcha text-white' : 'border-ash/40 bg-white'
+                  }">${item.done ? '✓' : ''}</span>
+                  <span class="text-xs ${item.done ? 'line-through text-ash' : 'text-sumi font-medium'}">${escapeHtml(item.text)}</span>
+                </button>
+                <button onclick="deleteShopItem('${item.id}')" class="text-ash hover:text-maple text-xs px-1">✕</button>
+              </div>
+            `).join('')}
+          </div>
+          <div class="flex gap-2 pt-1">
+            <input id="newShopInput" type="text" placeholder="${dict.addShopPlaceholder}"
+              onkeydown="if(event.key==='Enter') addShopItem()"
+              class="flex-1 px-3 py-2 rounded-xl bg-washi border border-hairline text-xs text-sumi focus:outline-none focus:border-matcha" />
+            <button onclick="addShopItem()" class="px-3.5 py-2 rounded-xl bg-sumi text-white text-xs font-bold">+</button>
+          </div>
+        </div>
+
+        <!-- Iconic Fast Food Chains -->
+        <div class="space-y-2">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-sumi px-1">${dict.fastFoodTitle}</h2>
+          ${fastFoodChains.map(ff => `
+            <div class="muji-card p-3.5 border-l-4 border-l-maple">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="flex items-center gap-1.5">
+                    <h3 class="text-sm font-bold text-sumi">${escapeHtml(ff.name)}</h3>
+                    <span class="px-2 py-0.5 rounded-md bg-maple-light text-maple-dark text-[10px] font-bold">${escapeHtml(t(ff.tag))}</span>
+                  </div>
+                  <p class="text-xs text-ash leading-relaxed mt-1">${escapeHtml(t(ff.desc))}</p>
+                </div>
+                <a href="${getMapsUrl(ff.query)}" target="_blank" rel="noopener noreferrer"
+                   class="shrink-0 px-2.5 py-1.5 rounded-xl bg-washi border border-hairline text-[11px] font-semibold text-sumi hover:border-maple">
+                  ${dict.findNearest}
+                </a>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    function updateFlightField(field, val) {
+      state.flights[field] = val;
+      saveState();
+    }
+
+    function addExpense() {
+      const titleEl = document.getElementById('expTitleInput');
+      const amtEl = document.getElementById('expAmountInput');
+      const catEl = document.getElementById('expCatSelect');
+      const payerEl = document.getElementById('expPayerSelect');
+      const title = (titleEl?.value || '').trim();
+      const amount = parseFloat(amtEl?.value || '0');
+      if (!title || isNaN(amount) || amount <= 0) return;
+      state.expenses.unshift({
+        id: 'ex-' + Date.now(),
+        title,
+        amount,
+        category: catEl?.value || 'Dining',
+        payer: payerEl?.value || 'Athena'
+      });
+      saveState();
+      renderApp();
+    }
+
+    function deleteExpense(id) {
+      state.expenses = state.expenses.filter(e => e.id !== id);
+      saveState();
+      renderApp();
+    }
+
+    function updateTipCalc(key, val) {
+      state.tipCalc[key] = val;
+      saveState();
+      renderApp();
+    }
+
+    function renderTravelAndBudgetTab() {
+      const dict = i18n[state.lang];
+      const totalUsd = state.expenses.reduce((sum, e) => sum + Number(e.amount || 0), 0);
+      const estEur = (totalUsd * 0.92).toFixed(0);
+
+      const sub = Number(state.tipCalc.subtotal || 0);
+      const tax = state.tipCalc.includeTax ? sub * 0.08875 : 0;
+      const tip = sub * (Number(state.tipCalc.tipPct || 20) / 100);
+      const grand = sub + tax + tip;
+
+      return `
+        <!-- Flights Card -->
+        <div class="muji-card p-3.5 space-y-3">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slateink">${dict.flightSection}</h2>
+          <div class="grid grid-cols-1 gap-2.5">
+            <div class="p-3 rounded-xl bg-washi border border-hairline space-y-1.5">
+              <p class="text-[11px] font-bold text-matcha uppercase">${dict.outbound}</p>
+              <input value="${escapeHtml(state.flights.outNo)}" onchange="updateFlightField('outNo', this.value)"
+                class="w-full bg-paper px-2.5 py-1.5 rounded-lg border border-hairline text-xs font-bold text-sumi" />
+              <div class="grid grid-cols-2 gap-1.5">
+                <input value="${escapeHtml(state.flights.outRef)}" onchange="updateFlightField('outRef', this.value)"
+                  class="bg-paper px-2.5 py-1 rounded-lg border border-hairline text-[11px] text-ash" />
+                <input value="${escapeHtml(state.flights.outTime)}" onchange="updateFlightField('outTime', this.value)"
+                  class="bg-paper px-2.5 py-1 rounded-lg border border-hairline text-[11px] text-ash" />
+              </div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-washi border border-hairline space-y-1.5">
+              <p class="text-[11px] font-bold text-maple uppercase">${dict.inbound}</p>
+              <input value="${escapeHtml(state.flights.inNo)}" onchange="updateFlightField('inNo', this.value)"
+                class="w-full bg-paper px-2.5 py-1.5 rounded-lg border border-hairline text-xs font-bold text-sumi" />
+              <div class="grid grid-cols-2 gap-1.5">
+                <input value="${escapeHtml(state.flights.inRef)}" onchange="updateFlightField('inRef', this.value)"
+                  class="bg-paper px-2.5 py-1 rounded-lg border border-hairline text-[11px] text-ash" />
+                <input value="${escapeHtml(state.flights.inTime)}" onchange="updateFlightField('inTime', this.value)"
+                  class="bg-paper px-2.5 py-1 rounded-lg border border-hairline text-[11px] text-ash" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hotel Card -->
+        <div class="muji-card p-3.5 space-y-2.5">
+          <div class="flex items-start justify-between gap-2">
+            <div>
+              <span class="text-[10px] font-bold uppercase tracking-wider text-matcha">${dict.hotelSection}</span>
+              <h3 class="text-sm font-bold text-sumi mt-0.5">Club Quarters Hotel Grand Central</h3>
+              <p class="text-xs text-ash mt-0.5">40 E 45th St, New York, NY 10017</p>
+              <p class="text-[11px] font-semibold text-sumi mt-1">Check-in: Nov 21 · Check-out: Nov 28 (7 Nights)</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-1">
+            <button onclick="copyText('Club Quarters Hotel Grand Central, 40 E 45th St, New York, NY 10017')"
+              class="flex-1 py-2 px-3 rounded-xl bg-washi border border-hairline text-xs font-semibold text-sumi hover:border-matcha">
+              📋 ${dict.copyAddress}
+            </button>
+            <a href="${getMapsUrl('Club Quarters Hotel Grand Central, 40 E 45th St, New York, NY')}" target="_blank" rel="noopener noreferrer"
+               class="py-2 px-3.5 rounded-xl bg-matcha text-white text-xs font-bold">
+              ${dict.navigate}
+            </a>
+          </div>
+        </div>
+
+        <!-- Expense Tracker -->
+        <div class="muji-card p-3.5 space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-sumi">${dict.budgetSection}</h2>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="p-3 rounded-xl bg-matcha-light/70 border border-matcha/20">
+              <p class="text-[10px] font-bold uppercase text-matcha-dark">${dict.totalSpent}</p>
+              <p class="text-lg font-bold text-sumi mt-0.5">$${totalUsd.toFixed(2)}</p>
+            </div>
+            <div class="p-3 rounded-xl bg-sand border border-hairline">
+              <p class="text-[10px] font-bold uppercase text-ash">${dict.estEuro}</p>
+              <p class="text-lg font-bold text-sumi mt-0.5">~€${estEur}</p>
+            </div>
+          </div>
+
+          <!-- Add New Expense Form -->
+          <div class="p-2.5 rounded-xl bg-washi border border-hairline space-y-2">
+            <p class="text-[11px] font-bold text-ash">${dict.addExpenseTitle}</p>
+            <div class="flex gap-1.5">
+              <input id="expTitleInput" type="text" placeholder="${dict.itemPlaceholder}"
+                class="flex-1 px-2.5 py-1.5 rounded-lg bg-paper border border-hairline text-xs text-sumi" />
+              <input id="expAmountInput" type="number" step="0.01" placeholder="${dict.amountPlaceholder}"
+                class="w-24 px-2.5 py-1.5 rounded-lg bg-paper border border-hairline text-xs text-sumi" />
+            </div>
+            <div class="flex gap-1.5">
+              <select id="expCatSelect" class="flex-1 px-2 py-1.5 rounded-lg bg-paper border border-hairline text-xs text-sumi">
+                ${Object.keys(dict.catLabels).map(k => `<option value="${k}">${dict.catLabels[k]}</option>`).join('')}
+              </select>
+              <select id="expPayerSelect" class="px-2 py-1.5 rounded-lg bg-paper border border-hairline text-xs text-sumi">
+                <option value="Athena">Athena</option>
+                <option value="Konrad">Konrad</option>
+              </select>
+              <button onclick="addExpense()" class="px-3.5 py-1.5 rounded-lg bg-sumi text-white text-xs font-bold">${dict.addBtn}</button>
+            </div>
+          </div>
+
+          <!-- Expense List -->
+          <div class="space-y-1.5 max-h-60 overflow-y-auto">
+            ${state.expenses.map(ex => `
+              <div class="flex items-center justify-between gap-2 p-2 rounded-xl bg-washi border border-hairline text-xs">
+                <div class="min-w-0">
+                  <p class="font-semibold text-sumi truncate">${escapeHtml(ex.title)}</p>
+                  <p class="text-[10px] text-ash">${dict.catLabels[ex.category] || ex.category} · ${dict.paidBy} ${escapeHtml(ex.payer)}</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="font-bold text-sumi">$${Number(ex.amount).toFixed(2)}</span>
+                  <button onclick="deleteExpense('${ex.id}')" class="text-ash hover:text-maple">✕</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- NYC Sales Tax & Tip Calculator -->
+        <div class="muji-card p-3.5 space-y-2.5">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-maple">${dict.tipCalcTitle}</h2>
+          <div>
+            <label class="text-[11px] font-semibold text-ash block mb-1">${dict.subtotalLabel}</label>
+            <input type="number" step="0.01" value="${sub}" oninput="updateTipCalc('subtotal', parseFloat(this.value) || 0)"
+              class="w-full px-3 py-2 rounded-xl bg-washi border border-hairline text-sm font-bold text-sumi" />
+          </div>
+          <div class="flex items-center justify-between gap-2">
+            <label class="inline-flex items-center gap-2 text-xs font-medium text-sumi cursor-pointer">
+              <input type="checkbox" ${state.tipCalc.includeTax ? 'checked' : ''} onchange="updateTipCalc('includeTax', this.checked)"
+                class="rounded text-matcha" />
+              <span>${dict.nycTaxToggle}</span>
+            </label>
+            <div class="inline-flex rounded-xl bg-sand p-0.5 border border-hairline">
+              ${[18, 20, 22].map(pct => `
+                <button onclick="updateTipCalc('tipPct', ${pct})" class="px-2.5 py-1 rounded-lg text-xs font-bold ${
+                  state.tipCalc.tipPct === pct ? 'bg-matcha text-white' : 'text-ash'
+                }">${pct}%</button>
+              `).join('')}
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-2 pt-1 text-center">
+            <div class="p-2 rounded-xl bg-washi border border-hairline">
+              <p class="text-[10px] text-ash">${dict.taxAmt}</p>
+              <p class="text-xs font-bold text-sumi mt-0.5">$${tax.toFixed(2)}</p>
+            </div>
+            <div class="p-2 rounded-xl bg-washi border border-hairline">
+              <p class="text-[10px] text-ash">${dict.tipAmt} (${state.tipCalc.tipPct}%)</p>
+              <p class="text-xs font-bold text-sumi mt-0.5">$${tip.toFixed(2)}</p>
+            </div>
+            <div class="p-2 rounded-xl bg-maple-light/70 border border-maple/25">
+              <p class="text-[10px] font-bold text-maple-dark">${dict.grandTotal}</p>
+              <p class="text-sm font-bold text-sumi mt-0.5">$${grand.toFixed(2)}</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function togglePackItem(groupId, itemId) {
+      const grp = state.packingGroups.find(g => g.id === groupId);
+      const item = grp?.items.find(i => i.id === itemId);
+      if (item) {
+        item.done = !item.done;
+        saveState();
+        renderApp();
+      }
+    }
+
+    function resetPacking() {
+      state.packingGroups.forEach(g => g.items.forEach(i => (i.done = false)));
+      saveState();
+      renderApp();
+    }
+
+    function renderPackingTab() {
+      const dict = i18n[state.lang];
+      let total = 0;
+      let done = 0;
+      state.packingGroups.forEach(g => {
+        g.items.forEach(i => {
+          total++;
+          if (i.done) done++;
+        });
+      });
+      const pct = total ? Math.round((done / total) * 100) : 0;
+
+      return `
+        <!-- Progress Card -->
+        <div class="muji-card p-3.5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-sumi">${dict.packingProgress}: ${done}/${total} (${pct}%)</span>
+            <button onclick="resetPacking()" class="text-[11px] font-semibold text-ash hover:text-maple">${dict.resetPacking}</button>
+          </div>
+          <div class="w-full h-2 bg-sand rounded-full overflow-hidden">
+            <div class="h-full bg-matcha transition-all duration-300" style="width: ${pct}%"></div>
+          </div>
+        </div>
+
+        <!-- Packing Categories -->
+        ${state.packingGroups.map(grp => `
+          <div class="muji-card p-3.5 space-y-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-matcha">${escapeHtml(t(grp.title))}</h3>
+            <div class="space-y-1.5">
+              ${grp.items.map(it => `
+                <button onclick="togglePackItem('${grp.id}', '${it.id}')"
+                  class="w-full flex items-start gap-2.5 p-2 rounded-xl bg-washi border border-hairline text-left">
+                  <span class="mt-0.5 w-4 h-4 rounded border flex items-center justify-center shrink-0 text-[10px] ${
+                    it.done ? 'bg-matcha border-matcha text-white' : 'border-ash/40 bg-white'
+                  }">${it.done ? '✓' : ''}</span>
+                  <span class="text-xs leading-snug ${it.done ? 'line-through text-ash' : 'text-sumi font-medium'}">${escapeHtml(t(it.label))}</span>
+                </button>
+              `).join('')}
+            </div>
+          </div>
+        `).join('')}
+
+        <!-- Saily eSIM Activation Guide -->
+        <div class="muji-card p-3.5 bg-slateink-light/60 border-slateink/25 space-y-1.5">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slateink-dark">📶 ${dict.esimTitle}</h3>
+          <p class="text-xs text-sumi leading-relaxed">1. <b>In Berlin (Wi-Fi):</b> Buy 5GB / 30-Day US plan inside your existing Saily account (no need to reinstall the existing Saily eSIM).</p>
+          <p class="text-xs text-sumi leading-relaxed">2. <b>Before Takeoff:</b> Turn OFF <i>Data Roaming</i> on your primary German SIM line.</p>
+          <p class="text-xs text-sumi leading-relaxed">3. <b>Upon Landing at EWR:</b> Switch Mobile Data to <b>Saily</b> & enable <i>Data Roaming</i> on Saily.</p>
+        </div>
+      `;
+    }
+
+    function renderApp() {
+      renderHeaderAndNav();
+      const container = document.getElementById('appContent');
+      if (!container) return;
+
+      if (state.activeTab === 'itinerary') {
+        container.innerHTML = renderItineraryTab();
+      } else if (state.activeTab === 'tickets') {
+        container.innerHTML = renderTicketsTab();
+      } else if (state.activeTab === 'food') {
+        container.innerHTML = renderFoodAndShopTab();
+      } else if (state.activeTab === 'travel') {
+        container.innerHTML = renderTravelAndBudgetTab();
+      } else if (state.activeTab === 'packing') {
+        container.innerHTML = renderPackingTab();
+      }
+    }
+
+    // Boot App
+    window.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      renderApp();
+      fetchNycWeather();
+    });
+  </script>
+</body>
+</html>
