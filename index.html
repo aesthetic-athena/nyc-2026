@@ -1570,6 +1570,9 @@
     }
 
     function downloadStandaloneHtml() {
+      // Close modals first so the downloaded offline file never opens stuck on a modal
+      closeInstallModal();
+      closeQrModal();
       const htmlContent = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
       const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
@@ -2294,6 +2297,8 @@
 
     // Boot App
     window.addEventListener('DOMContentLoaded', () => {
+      closeInstallModal();
+      closeQrModal();
       loadState();
       renderApp();
       fetchNycWeather();
